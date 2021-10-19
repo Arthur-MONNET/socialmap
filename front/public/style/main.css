@@ -182,3 +182,7 @@ body > script {display: none !important;}
 .skip-links a:focus {
 	position: static;
 }
+
+::-webkit-scrollbar {
+	width: 0;
+}
