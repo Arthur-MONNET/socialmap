@@ -4,171 +4,104 @@
 <head>
     <meta charset="utf-8">
     <title>MapBox</title>
-    <link rel="stylesheet" href="./style/main.css">
+    <link rel="stylesheet" href="../style/main.css">
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css' rel='stylesheet' />
 </head>
 
 <body>
-    <div id="map" style="height: 100vh; margin-bottom: 1000px"></div>
+    <div id="map" style="height: 100vh; margin: 0"></div>
     <script>
         mapboxgl.accessToken = "pk.eyJ1IjoiemFrNzQiLCJhIjoiY2t1emw3NXc2MWVneTJ3cmZrbXhwbGt6MCJ9.Ym0Tlo7Jy6I0KNH4ns3tJA"
-        function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
+
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/zak74/ckuzm2lot0yjg14s4e5k4202y',
             center: [0, 30],
             zoom: 1.5
         });
-        let hoveredStateId = null;
-
+        let hoveredCountryId = null
         map.on('load', () => {
-            map.addSource('states', {
-                'type': 'geojson',
-                'data': './world.geojson',
-                'generateId': true
-            });
-            map.addSource('markers', {
-                'type': 'geojson',
-                'data': {
-                    'type': 'FeatureCollection',
-                    'features': [
-                        {
-                            // feature for Mapbox DC
-                            'type': 'Feature',
-                            'geometry': {
-                                'type': 'Point',
-                                'coordinates': [
-                                    -77.03238901390978, 38.913188059745586
-                                ]
-                            },
-                            'properties': {
-                                "description":"lol",
-                                'title': 'Mapbox DC'
-                            }
-                        },
-                        {
-                            // feature for Mapbox SF
-                            'type': 'Feature',
-                            'geometry': {
-                                'type': 'Point',
-                                'coordinates': [-122.414, 37.776]
-                            },
-                            'properties': {
-                                "description":"lol",
-                                'title': 'Mapbox SF'
-                            }
-                        }
-                    ]
-                }
-            })
+            map.dragRotate.disable();
+ 
+            // disable map rotation using touch rotation gesture
+            map.touchZoomRotate.disableRotation();
 
-            // The feature-state dependent fill-opacity expression will render the hover effect
-            // when a feature's hover state is set to true.
+            map.addSource('country', {
+                type: 'geojson',
+                data: '../asset/world.geojson'
+            })
+                    
             map.addLayer({
-                'id': 'state-fills',
+                'id': 'country-fills',
                 'type': 'fill',
-                'source': 'states',
+                'source': 'country',
                 'layout': {},
                 'paint': {
                     'fill-color': [
                         'case',
                         ['boolean', ['feature-state', 'hover'], false],
-                        getRandomColor(), getRandomColor()
-
+                        '#41CEDE',
+                        '#00086C'
                     ],
-                    'fill-opacity': 0.5
+                         // blue color fill
+                    'fill-opacity': 0.5,
+                    'fill-color-transition': {
+                        'duration': 5000,
+                        'delay': 0
+                    }
                 }
-            });
-
+            })
+                
             map.addLayer({
-                'id': 'state-borders',
+                'id': 'outline',
                 'type': 'line',
-                'source': 'states',
+                'source': 'country',
                 'layout': {},
                 'paint': {
-                    'line-color': '#627BC1',
-                    'line-width': 2
+                    'line-color': '#FFFFFF',
+                    'line-width': 0.25
                 }
             });
 
-            map.addLayer({
-                'id': 'markers',
-                'type': 'symbol',
-                'source': 'markers',
-                'layout': {
-                    'icon-image': 'custom-marker',
-                    // get the title name from the source's "title" property
-                    'text-field': ['get', 'title'],
-                    'text-font': [
-                        'Open Sans Semibold',
-                        'Arial Unicode MS Bold'
-                    ],
-                    'text-offset': [0, 1.25],
-                    'text-anchor': 'top'
-                    
-                },
-                "paint": {
-                    "text-color": "#00ffff"
-                }
-            });
-
-
-            // When the user moves their mouse over the state-fill layer, we'll update the
-            // feature state for the feature under the mouse.
-            map.on('mousemove', 'state-fills', (e) => {
+            map.on('mousemove', 'country-fills', (e) => {
                 if (e.features.length > 0) {
-                    if (hoveredStateId !== null) {
+                    if (hoveredCountryId !== null) {
                         map.setFeatureState(
-                            { source: 'states', id: hoveredStateId },
+                            { source: 'country', id: hoveredCountryId },
                             { hover: false }
                         );
                     }
-                    hoveredStateId = e.features[0].id;
+                    hoveredCountryId = e.features[0].id;
                     map.setFeatureState(
-                        { source: 'states', id: hoveredStateId },
+                        { source: 'country', id: hoveredCountryId },
                         { hover: true }
                     );
                 }
             });
-            const m = new mapboxgl.Marker().setLngLat([1, 45]).addTo(map)
-            // When the mouse leaves the state-fill layer, update the feature state of the
-            // previously hovered feature.
-            map.on('mouseleave', 'state-fills', () => {
-                if (hoveredStateId !== null) {
+
+            map.on('mouseleave', 'country-fills', () => {
+                if (hoveredCountryId !== null) {
                     map.setFeatureState(
-                        { source: 'states', id: hoveredStateId },
+                        { source: 'country', id: hoveredCountryId },
                         { hover: false }
                     );
                 }
-                hoveredStateId = null;
+                hoveredCountryId = null;
+                map.getCanvas().style.cursor = '';
             });
-            map.on('click', "markers",(e)=>{
-                // Copy coordinates array.
-                const coordinates = e.features[0].geometry.coordinates.slice();
-                const description = e.features[0].properties.description;
-                
-                // Ensure that if the map is zoomed out such that multiple
-                // copies of the feature are visible, the popup appears
-                // over the copy being pointed to.
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-                
+            
+            map.on('click', 'country-fills', (e) => {
                 new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(description)
-                .addTo(map);
+                    .setLngLat(e.lngLat)
+                    .setHTML(e.features[0].properties.NAME_LONG)
+                    .addTo(map);
+            });
+
+            map.on('mouseenter', 'country-fills', () => {
+                map.getCanvas().style.cursor = 'pointer';
             })
         });
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>
