@@ -1,6 +1,0 @@
-/*coordonnées gps trad :
-
-
-
-
-*/
