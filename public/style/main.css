@@ -11,6 +11,18 @@ body {
 	line-height: 1.5; /* adapt to your design */
 }
 
+#map {
+	width: 100vw;
+	height: 100vh;
+}
+
+#home {
+	width: 100vw;
+	height: 150vh;
+	border: none;
+	margin: 0;
+}
+
 /* font-sizing for content */
 /* preserve vertical-rythm, thanks to http://soqr.fr/vertical-rhythm/ */
 p,
