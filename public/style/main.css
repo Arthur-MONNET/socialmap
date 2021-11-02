@@ -9,6 +9,7 @@ body {
 	font-family: "Century Gothic", helvetica, arial, sans-serif;
 	font-size: 1.4em; /* equiv 14px */
 	line-height: 1.5; /* adapt to your design */
+	margin: 0;
 }
 
 #map {
@@ -197,4 +198,5 @@ body > script {display: none !important;}
 
 ::-webkit-scrollbar {
 	width: 0;
+	display: none;
 }
