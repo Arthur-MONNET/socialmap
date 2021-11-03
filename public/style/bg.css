@@ -1,0 +1,27 @@
+#bg{
+    z-index: -10;
+    height: auto;
+    width: 100vw;
+    position: absolute;
+    background-color: var(--bg-white);
+}
+#bg>img{
+    position: absolute;
+    height: 80vh;
+}
+#imgbg1{
+    top: 0;
+    left: 0;
+}
+#imgbg2{
+    top: 0;
+    right: 0;
+}
+#imgbg3{
+    top: 120vh;
+    left: 0;
+}
+#imgbg4{
+    top: 160vh;
+    right: 0;
+}

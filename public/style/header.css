@@ -1,0 +1,12 @@
+header{
+    width : 80vw;
+    padding: 0 10vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 25vh;
+}
+header>div>.darkButton{
+    margin-right: 15px;
+}
