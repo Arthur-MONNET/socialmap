@@ -16,6 +16,15 @@ http.listen(port, () => {
 });
 app.use(express.static(__dirname + '/public'));
 
+var express = require('express');
+var app = express();
+var path = require('path')
+require('dotenv').config()
+
+
+app.get('/mapToken', function(req, res) {
+    res.send(process.env.MAP_TOKEN);
+});
 
 
 //select link to start
@@ -23,3 +32,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/', function(req, res){
+    res.render('./pages/map.html',{mapToken:process.env.MAP_TOKEN});
+});
+app.listen(3000)
