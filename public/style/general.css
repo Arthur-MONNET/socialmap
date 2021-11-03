@@ -1,0 +1,23 @@
+.lightButton{
+    background-color: transparent;
+    border-radius: 30px;
+    padding: 10px 30px;
+    border:solid 2px var(--bg-blue);
+    color: var(--bg-blue);
+}
+
+.darkButton{
+    background-color: var(--bg-blue);
+    border-radius: 20px;
+    padding: 10px 20px;
+    border:solid 2px var(--bg-blue);
+    color: var(--yellow);
+}
+
+iframe {
+    background-color: transparent;
+    margin: 0;
+    border: 0;
+    width:100vw;
+    height: 100vh;
+}

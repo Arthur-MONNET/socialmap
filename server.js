@@ -2,15 +2,24 @@
 Grinwitch + longitude /90*500   |    Equator + latitude /90*500
 */
 
-
-var express = require('express');
-var app = express();
-var path = require('path')
-
-app.use(express.static(path.join(__dirname, './public')));
-
-app.get('/',function(req, res) {
-    res.sendFile(__dirname + '/index.html');
-    res.send()
+const express = require('express'),
+axios = require('axios'),
+app = express(),
+http = require('http').Server(app),
+port = process.env.PORT || 3000;
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+//port http
+http.listen(port, () => {
+    console.log(`http://localhost:${port}/`);
 });
-app.listen(3000)
+app.use(express.static(__dirname + '/public'));
+
+
+
+//select link to start
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
+
