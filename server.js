@@ -8,6 +8,11 @@ var app = express();
 var path = require('path')
 require('dotenv').config()
 
+
+app.get('/mapToken', function(req, res) {
+    res.send(process.env.MAP_TOKEN);
+});
+
 app.use(express.static(path.join(__dirname, './public')));
 
 app.get('/',function(req, res) {
