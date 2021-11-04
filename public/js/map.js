@@ -2,6 +2,7 @@ let map_token = ''
 $.ajax({
     url: "/mapToken",
     type: "GET",
+    dataType: 'text',
     success: function(response, status, http) {
         if (response) {
             map_token = response
@@ -10,8 +11,19 @@ $.ajax({
     }
 });
 
+$.ajax({
+    url: "/searchUserName?username=GuellaRoxane",
+    type: "POST",
+    dataType: 'text',
+    success: function(response, status, http) {
+        if (response) {
+            console.log(response)
+        }
+    }
+});
+
 function drawMap (response) {
-    mapboxgl.accessToken = response
+    mapboxgl.accessToken = response 
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/zak74/ckuzm2lot0yjg14s4e5k4202y',
