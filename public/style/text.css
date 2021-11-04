@@ -11,18 +11,32 @@ p{
     font-size: 1.05vw;
     font-family: 'Lato', sans-serif;
 }
-.questions,.footerText{
+h3{
+    margin: 0;
     font-weight: 700;
-    font-size: 24px;
+    font-size: 1.2vw;
     font-family: 'Lato', sans-serif;
 }
-.title{
+h2{
     font-weight: 400;
-    font-size: 50px;
+    font-size: 3vw;
+    margin: 0;
     font-family: 'Cardo', serif;
 }
 #loadingText{
     font-weight: 400;
     font-size: 60px;
     font-family: 'Cardo', serif;
+}
+
+@media (min-width: 1830px) {
+    p,.classicButton{
+        font-size: 19.215px;
+    }
+    h3{
+        font-size: 21.96px;
+    }
+    h2{
+        font-size: 54.9px;
+    }
 }

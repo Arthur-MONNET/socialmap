@@ -2,7 +2,7 @@
 Grinwitch + longitude /90*500   |    Equator + latitude /90*500
 */
 
-const express = require('express'),
+/* const express = require('express'),
 axios = require('axios'),
 app = express(),
 http = require('http').Server(app),
@@ -14,15 +14,16 @@ if (process.env.NODE_ENV !== 'production') {
 http.listen(port, () => {
     console.log(`http://localhost:${port}/`);
 });
-app.use(express.static(__dirname + '/public'));
+ */
 
 var express = require('express');
 var app = express();
 var path = require('path')
 require('dotenv').config()
 
+app.use(express.static(__dirname + '/public'));
 
-app.get('/mapToken', function(req, res) {
+app.get('/mapToken', function (req, res) {
     res.send(process.env.MAP_TOKEN);
 });
 
@@ -32,7 +33,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/', function(req, res){
-    res.render('./pages/map.html',{mapToken:process.env.MAP_TOKEN});
+app.get('/', function (req, res) {
+    res.render('./pages/map.html', { mapToken: process.env.MAP_TOKEN });
 });
 app.listen(3000)
