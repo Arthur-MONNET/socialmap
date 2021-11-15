@@ -1,26 +1,26 @@
-let map_token = ''
 $.ajax({
     url: "/mapToken",
-    type: "GET",
+    type: "POST",
     dataType: 'text',
     success: function(response, status, http) {
         if (response) {
-            map_token = response
             drawMap(response)
         }
     }
 });
 
-$.ajax({
-    url: "/searchUserName?username=GuellaRoxane",
-    type: "POST",
-    dataType: 'text',
-    success: function(response, status, http) {
-        if (response) {
-            console.log(response)
-        }
-    }
-});
+
+function test(response, includes) {
+    response.forEach((el, i) => {
+        console.log(includes.places[i].geo.bbox)
+        return [includes.places[i].geo.bbox[0], includes.places[i].geo.bbox[1]]
+        /* var customMarker = document.createElement('div')
+        customMarker.className = 'mapboxgl-marker'
+        var marker = new mapboxgl.Marker(customMarker)
+            .setLngLat([includes.places[i].geo.bbox[0], includes.places[i].geo.bbox[1]]).addTo(map) */
+    })
+    console.log('Test', response, includes)
+}
 
 function drawMap (response) {
     mapboxgl.accessToken = response 
@@ -111,5 +111,36 @@ function drawMap (response) {
         map.on('mouseenter', 'country-fills', () => {
             map.getCanvas().style.cursor = 'pointer';
         })
+        async function addMarker () {
+        var marker = new mapboxgl.Marker()
+            .setLngLat(await getUser())
+            .addTo(map);
+        }
+        addMarker()
+    })
+}
+
+// get user 
+
+function getUser() {    
+    return $.ajax({
+        url: "/searchUserName?username=GuellaRoxane",
+        type: "POST",
+        dataType: 'text',
+        success: function(response, status, http) {
+            if (response) {
+                console.log(response)
+                console.log(JSON.parse(response).data.id)
+                $.ajax({
+                    url: `/userTweets?id=${JSON.parse(response).data.id}`,
+                    type: "POST",
+                    success: function(response, status, https) {
+                        if (response) {
+                            test(response._realData.data, response._realData.includes)
+                        }
+                    }
+                })
+            }
+        }
     })
 }
