@@ -7,28 +7,57 @@ $.ajax({
             drawMap(response)
         }
     }
-});
+})
 
+async function addMarker(nbTweets, token) {
+    const temp = await getUser()
+    const geocodeUser = await getAdressGeocode(token, JSON.parse(temp).data.location)
+    const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
+    const retweets = await quotedOf(temp2._realData.data[nbTweets].id)
+    console.log('retweets', 'tweets', nbTweets, retweets._realData)
+    if (temp2._realData.includes.places[nbTweets].geo.bbox[0]) {
+        return [temp2._realData.includes.places[nbTweets].geo.bbox[0], temp2._realData.includes.places[nbTweets].geo.bbox[1]]
+    } else {
+        return geocodeUser.geometry.coordinates
+    }
+}
 
-function test(response, includes) {
-    response.forEach((el, i) => {
-        console.log(includes.places[i].geo.bbox)
-        return [includes.places[i].geo.bbox[0], includes.places[i].geo.bbox[1]]
-        /* var customMarker = document.createElement('div')
-        customMarker.className = 'mapboxgl-marker'
-        var marker = new mapboxgl.Marker(customMarker)
-            .setLngLat([includes.places[i].geo.bbox[0], includes.places[i].geo.bbox[1]]).addTo(map) */
-    })
-    console.log('Test', response, includes)
+async function addPopup(nbTweets) {
+    const temp = await getUser()
+    const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
+    const retweets = await quotedOf(temp2._realData.data[nbTweets].id)
+    let placeRetweets = ''
+    if (retweets._realData.includes.places) {
+        for (const place in retweets._realData.includes.places) {
+            console.log(place)
+            placeRetweets += place
+        }
+    } else {
+        for (let i = 0; i < retweets._realData.includes.users.length; i++) {
+            placeRetweets += retweets._realData.includes.users[i].location
+        }
+    }
+    return {'HTML': `<em>${temp2._realData.data[nbTweets].text}</em><br>
+            Retweet: ${temp2._realData.data[nbTweets].public_metrics.retweet_count+temp2._realData.data[nbTweets].public_metrics.quote_count}, "<em>${placeRetweets}</em>"<br>
+            Like: ${temp2._realData.data[nbTweets].public_metrics.like_count}<br>
+            Reponse: ${temp2._realData.data[nbTweets].public_metrics.reply_count}
+        `,'id': temp2._realData.data[nbTweets].id }
+}
+
+async function getAdressGeocode(token, adress){
+    const geocode = await getGeocode(token, adress)
+    if (geocode) {
+        return geocode.features[0]
+    }
 }
 
 function drawMap (response) {
-    mapboxgl.accessToken = response 
+    mapboxgl.accessToken = response
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/zak74/ckuzm2lot0yjg14s4e5k4202y',
-        center: [0, 30],
-        zoom: 1.5
+        center: [5, 45],
+        zoom: 4.5
     });
     let hoveredCountryId = null
     map.on('load', () => {
@@ -100,23 +129,27 @@ function drawMap (response) {
             hoveredCountryId = null;
             map.getCanvas().style.cursor = '';
         })
-                
-        map.on('click', 'country-fills', (e) => {
-            new mapboxgl.Popup()
-                .setLngLat(e.lngLat)
-                .setHTML(e.features[0].properties.NAME_LONG)
-                .addTo(map);
-        })
 
         map.on('mouseenter', 'country-fills', () => {
             map.getCanvas().style.cursor = 'pointer';
         })
-        async function addMarker () {
-        var marker = new mapboxgl.Marker()
-            .setLngLat(await getUser())
-            .addTo(map);
+        async function addMarkers() {
+            const nbTweets = JSON.parse(await getUser()).data.public_metrics.tweet_count
+            
+            for (let i=0; i<nbTweets; i++) {
+                const popupTextId = await addPopup(i)
+                const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+                    popupTextId.HTML
+                )
+                const el = document.createElement('div');
+                el.id = 'tweets';
+                var marker = new mapboxgl.Marker(el)
+                    .setLngLat(await addMarker(i, response))
+                    .setPopup(popup)
+                    .addTo(map)
+            }
         }
-        addMarker()
+        addMarkers()
     })
 }
 
@@ -129,17 +162,44 @@ function getUser() {
         dataType: 'text',
         success: function(response, status, http) {
             if (response) {
-                console.log(response)
-                console.log(JSON.parse(response).data.id)
-                $.ajax({
-                    url: `/userTweets?id=${JSON.parse(response).data.id}`,
-                    type: "POST",
-                    success: function(response, status, https) {
-                        if (response) {
-                            test(response._realData.data, response._realData.includes)
-                        }
-                    }
-                })
+                return response
+            }
+        }
+    })
+}
+
+function getTweetsUser(userId) {
+    return $.ajax({
+        url: `/userTweets?id=${userId}`,
+        type: "POST",
+        success: function(response, status, https) {
+            if (response) {
+               return response._realData.data, response._realData.includes
+            }
+        }
+    })
+}
+
+//get geocode of a place
+function getGeocode(accessToken,adress) {
+    return $.ajax({
+        url: ` https://api.tiles.mapbox.com/geocoding/v5/mapbox.places/${adress}.json?access_token=${accessToken}&limit=1`,
+        type: "GET",
+        success: function(response, status, https) {
+            if (response) {
+               return response
+            }
+        }
+    })
+}
+
+function quotedOf(tweetId) {
+    return $.ajax({
+        url: `/quotedOf?id=${tweetId}`,
+        type: "POST",
+        success: function(response, status, https) {
+            if (response) {
+               return response
             }
         }
     })

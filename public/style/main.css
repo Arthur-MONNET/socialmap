@@ -290,3 +290,15 @@ body>script {
     display: none;
 }
 
+#tweets {
+    background-image: url('https://static.cdnlogo.com/logos/t/96/twitter-icon.svg');
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    }
+     
+.mapboxgl-popup {
+    max-width: 200px;
+}

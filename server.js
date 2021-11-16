@@ -29,7 +29,7 @@ app.listen(3000)
 
 // API Twitter request
 app.post('/searchUserName', (req, res) =>{
-    client.v2.userByUsername(req.query['username'], {"user.fields": 'location'})
+    client.v2.userByUsername(req.query['username'], {"user.fields": ['location', 'public_metrics']})
     .then(response => 
         res.send(response)
     )
@@ -41,4 +41,18 @@ app.post('/userTweets', (req, res) => {
     .then(response =>
         res.send(response))
     .catch(error => console.error(error))
+})
+
+app.post('/quotedOf', (req, res) => {
+    client.v2.search(req.query['id'], {"user.fields": ['location', 'public_metrics'], "expansions": ['author_id', 'geo.place_id'], "tweet.fields": ['geo', 'public_metrics'],'place.fields': ['contained_within', 'country', 'geo']})
+    .then(response =>
+        res.send(response)
+    )
+})
+
+process.on('SIGTERM', () => {
+    debug('SIGTERM signal received: closing HTTP server')
+    server.close(() => {
+      debug('HTTP server closed')
+    })
 })
