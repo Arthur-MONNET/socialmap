@@ -1,0 +1,407 @@
+#registerContent{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#bg{
+    height: 100vh;
+}
+
+#registerContent>div{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+#registerContent>.left{
+    justify-content: space-between;
+    width: 35%;
+    padding: 0 3%;
+}
+
+#registerContent>.left>img{
+    margin-bottom: 3vh;
+}
+#registerContent>.left>div{
+    margin-top: 12vh;
+}
+
+#registerContent>.left>div>p{
+    font-weight: 400;
+    margin: 0;
+    font-family: 'Cardo', serif;
+    font-size: 2vw;
+    display: none;
+}
+
+/* ---------------------------------------------------------- */
+#registerContent>.left>div>p:nth-child(2){
+    display: block;
+}
+/* ---------------------------------------------------------- */
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+#registerContent>.right{
+    width: 59%;
+    background-color: var(--bg-blue);
+    color: var(--yellow);
+}
+
+#registerContent>.right>div{
+    display: flex;
+}
+
+#stage{
+    margin: 17vh 0 10vh;
+    width: 25vw;
+    height: 5vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    max-width : 600px;
+}
+
+#stage>.num{
+    transition: background-color 0.5s 0.2s;
+    z-index: 2;
+    height: 5vh;
+    width: 5vh;
+    border-radius: 50%;
+    background-color: rgb(111,113,155);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#stage>.num:nth-child(3){
+    background-color: var(--blue);
+}
+
+#stage>.num>p{
+    font-size: 2.5vh;
+}
+
+#stage>.backline{
+    position: absolute;
+    height: 1px;
+    margin-left: 2.5vh;
+    width: calc(25vw - 5vh);
+    max-width : calc(600px - 5vh);
+    background-color: var(--iris);
+}
+#stage>.frontline{
+    transition: width 0.7s, max-width 0.7s;
+    position: absolute;
+    z-index: 1;
+    height: 3px;
+    margin-left: 2.5vh;
+    width: calc((25vw - 5vh) / 4 * 0);
+    background-color: var(--blue);
+    max-width : calc((600px - 5vh) / 4 * 0);
+}
+
+#registerContent .form{
+    align-items: center;
+    flex-direction: column;
+    width: 30vw;
+    max-width : 650px
+}
+
+#registerContent .form button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    padding-right:3%;
+    font-size: 0.90vw;
+    border-radius: 10px;
+    border: none;
+    height: 3vw;
+    max-height: 60px;
+}
+
+@media (min-width: 2050px) {
+    #registerContent .form button{
+        font-size: 18.45px;
+    }
+}
+
+#registerContent .form button>svg{
+    width: 2.5vw;
+    max-width: 55px;
+}
+
+#registerContent .form button>img{
+    width: 2.5vw;
+    max-width: 55px;
+}
+
+#registerContent .header{
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: row;
+    height: 8vh;
+    width: 100%;
+}
+
+#registerContent .twitterButton{
+    background-color: var(--blue);
+    color: white;
+}
+
+#registerContent .googleButton{
+    background-color: white;
+    color: var(--blue);
+}
+
+#registerContent .header>p{
+    margin-right: 5vw;
+}
+
+#registerContent .header>p:nth-child(1){
+    color: white;
+    margin-right: 3vw;
+}
+
+#registerContent .form>.buttons>div:nth-child(2){
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+}
+
+#registerContent .form>.buttons{
+    width: 100%;
+}
+
+#registerContent .ou{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+#registerContent .ou>p{
+    color: white;
+    margin: 3vh 15px 4vh;
+}
+
+#registerContent .line{
+    background-color: var(--gray);
+    width: 100%;
+    height: 1px;
+}
+
+#registerContent form{
+    width: 140%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#registerContent form>section{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#registerContent form>section>div{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+#registerContent form>section>div>div{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 47%;
+}
+
+#registerContent form>section input{
+    background-color: var(--gray);
+    padding: 12px 20px;
+    margin: 5px 0 4vh;
+    border:none;
+    border-radius: 10px;
+    color: white;
+}
+
+#registerContent form input::placeholder {
+    color: rgb(200, 200, 200);
+}
+
+#registerContent form .errorMessage {
+    color: transparent;
+    width: 100%;
+    margin-top: -25px;
+    text-align: center;
+    height: 45px;
+}
+
+#registerContent form>.blueRightButton{
+    margin-left: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    border-radius: 20px;
+    border: 1px var(--yellow) solid;
+    height: 35px;
+    background-color: transparent;
+    color: var(--yellow);
+    display: none;
+}
+
+#registerContent form>.blueCenterButton{
+    width: 35%;
+    margin-left: 32.5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    border-radius: 20px;
+    border: 1px var(--yellow) solid;
+    height: 35px;
+    background-color: transparent;
+    color: var(--yellow);
+    display: none;
+}
+
+#registerContent form>.yellowRightButton{
+    margin-left: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    border-radius: 20px;
+    border: none;
+    height: 35px;
+    background-color: var(--yellow);
+    display: none;
+}
+
+/* ---------------------------------------------------------- */
+#registerContent form>.submit:nth-child(2){
+    display: block;
+}
+/* ---------------------------------------------------------- */
+
+
+/***********************************************************/
+
+#registerContent form>section>#fs3{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    padding: 3vh 0 12vh;
+    width: 100%;
+    max-height: 300px;
+}
+
+#fs3 label{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+#fs3 label>div>img{
+    height:20px;
+    margin: 5px 0;
+}
+#fs3 label>div>p:nth-child(3){
+    color: black;
+}
+
+#fs3 label:hover, #fs3>input:hover+label{
+    transition: border-color 0.2s, background-color 0.2s;
+    background-color: rgba(255, 255, 255,0.5);
+}
+#fs3 .check:checked+label{
+    transition: box-shadow 0.5s, background-color 0.5s;
+    background-color: rgba(255, 255, 255,0.5);
+    border-color:var(--yellow);
+    box-shadow: 0px 19.181190490722656px 76.72476196289062px 0px rgba(39, 41, 40, 0.1);
+}
+#fs3 .check+label{
+    transition: box-shadow 0.3s, background-color 0.2s;
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin:0 2vh;
+    padding: 10px 15px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255,0.3);
+}
+
+#registerContent form>section .teamMail{
+    margin: 1vh 0 0;
+}
+#registerContent form>section>.copy{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2vh;
+    text-decoration: underline;
+    cursor: pointer;
+}
+#registerContent form>section>.copy:active{
+    color: white
+}
+
+#registerContent form>section>.teamMails{
+    display: flex;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 100%;
+    padding:1vh 3px ;
+    height:13vw;
+}
+
+#registerContent form>section .addMail{
+    display: flex;
+    padding: 1vw 0;
+    justify-content: flex-start;
+    background-color: rgba(255, 255, 255,0.2);
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+}
+.addMail>svg{
+    fill: rgba(255, 255, 255, 0.5);
+    height: 1vw;
+    margin-left: 0.3vw;
+}
+
+#registerContent form>section>.gradientTop{
+    z-index: 1;
+    width: calc(100% + 6px);
+    height: 2vh;
+    margin-bottom: -2vh;
+    background: linear-gradient(var(--bg-blue), transparent);
+}
+
+#registerContent form>section>.gradientBottom{
+    z-index: 1;
+    width: calc(100% + 6px);
+    height: 2vh;
+    margin-top: -2vh;
+    background: linear-gradient(transparent,var(--bg-blue));
+}

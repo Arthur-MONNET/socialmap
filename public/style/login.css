@@ -1,0 +1,195 @@
+#loginContent{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#bg{
+    height: 100vh;
+}
+
+#loginContent>div{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+#loginContent>.left{
+    
+    width: 35%;
+    padding: 0 3%;
+}
+
+#loginContent>.left>img{
+    margin-bottom: 3vh;
+}
+
+#loginContent>.left>div{
+    margin-top: 12vh;
+}
+
+#loginContent>.left>div>p{
+    font-weight: 400;
+    margin: 0;
+    font-family: 'Cardo', serif;
+    font-size: 2vw;
+}
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+#loginContent>.right{
+    width: 59%;
+    background-color: var(--bg-blue);
+    color: var(--yellow);
+}
+
+#loginContent>.right>div{
+    display: flex;
+}
+#loginContent .form{
+    align-items: center;
+    flex-direction: column;
+    width: 30vw;
+    max-width : 650px
+}
+
+#loginContent .form button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    padding-right:3%;
+    font-size: 0.90vw;
+    border-radius: 10px;
+    border: none;
+    height: 3vw;
+    max-height: 60px;
+}
+
+@media (min-width: 2050px) {
+    #loginContent .form button{
+        font-size: 18.45px;
+    }
+}
+
+#loginContent .form button>svg{
+    width: 2.5vw;
+    max-width: 55px;
+}
+
+#loginContent .form button>img{
+    width: 2.5vw;
+    max-width: 55px;
+}
+
+#loginContent .header{
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: row;
+    height: 8vh;
+    width: 100%;
+}
+
+#loginContent .twitterButton{
+    background-color: var(--blue);
+    color: white;
+}
+
+#loginContent .googleButton{
+    background-color: white;
+    color: var(--blue);
+}
+
+#loginContent .header>p{
+    margin-right: 5vw;
+}
+
+#loginContent .header>p:nth-child(1){
+    color: white;
+    margin-right: 3vw;
+}
+
+#loginContent .form>div:nth-child(1){
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+}
+
+#loginContent .ou{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+#loginContent .ou>p{
+    color: white;
+    margin: 3vh 15px 4vh;
+}
+
+#loginContent .line{
+    background-color: var(--gray);
+    width: 100%;
+    height: 1px;
+}
+
+#loginContent form{
+    width: 90%;
+    height : 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#loginContent form>div{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+#loginContent form>.email, #loginContent form>.pwd{
+    background-color: var(--gray);
+    padding: 12px 20px;
+    margin: 5px 0 4vh;
+    border:none;
+    border-radius: 10px;
+    color: white;
+}
+
+#loginContent form>input::placeholder {
+    color: rgb(200, 200, 200);
+}
+#loginContent form>.errorMessage {
+    color: transparent;
+    width: 100%;
+    margin-top: -25px;
+    text-align: center;
+    height: 45px;
+}
+
+#loginContent form a, #loginContent form a:active{
+    color: white;
+}
+
+#loginContent form>.submit{
+    margin-left: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    border-radius: 20px;
+    border: none;
+    height: 35px;
+    background-color: var(--yellow);
+}

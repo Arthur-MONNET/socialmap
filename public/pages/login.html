@@ -1,15 +1,43 @@
-<div>
-    <button>RETOUR</button>
-    <div>
-        <form>
-            <h3>Socialmap x Twitter</h3>
-            <div><button>Inscription</button><button>Connexion</button></div>
-            <input type='email' placeholder="E-mail" required/>
-            <input type='password' placeholder="Mot de passe" required/>
-            <p id="errorMessage"></p>
-            <input type='submit'/>
-            <h3>ou connectez-vous via</h3>
-            <div><img/><img/></div>
-        </form>
+<link rel="stylesheet" href="../style/main.css">
+<link rel="stylesheet" href="../style/login.css">
+<div id="bg"></div>
+<div id="loginContent">
+    <div class="left">
+        <div>
+            <img src="../asset/img/social_map_x_twitter.svg" />
+            <p>Dirigez vos campagnes n’a jamais été aussi simple :)</p>
+        </div>
+        <img src="../asset/img/login_girl.png" />
+    </div>
+    <div class="right">
+        <div class="header">
+            <p>Pas encore membre ?</p>
+            <p>Essayer gratuitement</p>
+        </div>
+        <div class="form">
+            <div>
+                <button class="twitterButton classicButton">
+                    <svg width="43" height="41" viewBox="0 0 43 41" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M6.71533 30.2985C9.994 30.4413 12.9408 29.6758 15.6617 27.7845C12.8424 27.496 10.9356 26.1808 9.88808 23.7043H12.4641L12.5171 23.603C9.55945 22.7211 7.94335 20.8572 7.66337 17.9099L10.3183 18.5984L10.421 18.5315C7.69256 16.3901 7.08396 13.8296 8.55628 10.7162C11.9571 14.4229 16.1233 16.4873 21.338 16.8255C21.338 16.2626 21.3229 15.728 21.338 15.1954C21.3802 13.9319 21.7985 12.7928 22.6774 11.8198C24.9561 9.29472 28.7202 8.92719 31.4691 10.9957C31.9848 11.3835 32.4161 11.4675 33.0258 11.2225C33.9727 10.8428 34.9597 10.5482 36.0829 10.1644C35.7045 10.7881 35.4278 11.3581 35.0397 11.8522C34.6516 12.3463 34.1371 12.7837 33.6917 13.3264L36.7574 12.5296C36.1088 13.4713 35.2945 14.3032 34.3489 14.9899C33.9165 15.2987 33.749 15.6622 33.7479 16.1644C33.7479 19.2889 32.9263 22.2139 31.1686 24.8787C28.4088 29.0603 24.514 31.72 19.2776 32.5381C14.9536 33.2134 10.8707 32.5827 7.06234 30.5061C6.94776 30.4382 6.83208 30.3674 6.71533 30.2985Z" />
+                    </svg>Se connecter avec Twitter
+                </button>
+                <button class="googleButton classicButton"><img src="../asset/img/google_icon.png" />Se connecter avec Google</button>
+            </div>
+            <div class="ou">
+                <div class="line"></div>
+                <p>ou</p>
+                <div class="line"></div>
+            </div>
+            <form>
+                <p>E-mail</p>
+                <input type='email' class="email" placeholder="E-mail" required />
+                <div><p>Mot de passe</p><a href=""><p>Mot de passe oublié ?</p></a></div>
+                <input type='password' class="pwd" placeholder="Mot de passe" required />
+                <p class="errorMessage">Le mot de passe ou l’identifiant est incorrect.</p>
+                <input type='submit' class="submit classicButton" value="Connexion"/>
+            </form>
+        </div>
+        <div></div>
     </div>
 </div>

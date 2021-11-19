@@ -88,7 +88,7 @@ function drawMap (response) {
                     'case',
                     ['boolean', ['feature-state', 'hover'], false],
                     '#41CEDE',
-                    '#00086C'
+                    'rgba(0,0,0,0)'
                 ],
                 // blue color fill
                 'fill-opacity': 0.5,
@@ -98,7 +98,7 @@ function drawMap (response) {
                 }
             }
         })
-                    
+        map.addControl(new mapboxgl.NavigationControl());            
         map.addLayer({
             'id': 'outline',
             'type': 'line',
