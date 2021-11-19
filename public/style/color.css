@@ -2,6 +2,9 @@
     --yellow: #DEFD6D;
     --bg-blue: #131730;
     --bg-white: #ECECEC;
-    --blue: #4759FF;
+    --blue: rgb(71, 89, 255);
     --iris:rgba(188, 189, 244, 0.54);
+    --gray:rgba(200, 200, 200, 0.7);
+    --color-gradient:rgba(255, 255, 255, 0.25);
+    --gradient: radial-gradient(at top left, rgba(71, 89, 255,0.25), transparent 50%), radial-gradient(at bottom right, rgba(222, 253, 109,0.25), transparent 50%);
 }

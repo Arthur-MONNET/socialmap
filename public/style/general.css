@@ -21,3 +21,10 @@ iframe {
     width:100vw;
     height: 100vh;
 }
+a{
+    color: black;
+    text-decoration: none;
+}
+a:active{
+    color: black;
+}

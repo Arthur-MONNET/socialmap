@@ -3,10 +3,11 @@
 @import './general.css';
 @import './header.css';
 @import './footer.css';
-
-@import './home.css';
 @import './bg.css';
 
+#error, #map, #loading, #home,/*  #profile, */ #register, #login{
+    display: none
+}
 
 html {
     font-size: 62.5%;

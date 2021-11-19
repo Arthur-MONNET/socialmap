@@ -1,18 +1,41 @@
-<div>
-    <button>RETOUR</button>
-    <div>
-        <form>
-            <h3>Socialmap x Twitter</h3>
-            <div><button>Inscription</button><button>Connexion</button></div>
-            <input type='text' placeholder="Nom de l’entreprise" required/>
-            <div><input type='text' placeholder="Twitter de l’entreprise" required/><input type='text' placeholder="Localisation du siège social" required/></div>
-            <div><input type='text' placeholder="Nom" required/><input type='text' placeholder="Prénom" required/></div>
-            <input type='email' placeholder="E-mail" required/>
-            <input type='password' placeholder="Mot de passe" required/>
-            <p id="errorMessage"></p>
-            <input type='submit'/>
-            <h3>ou connectez-vous via</h3>
-            <div><img/><img/></div>
-        </form>
+<link rel="stylesheet" href="../style/main.css">
+<link rel="stylesheet" href="../style/register.css">
+<div id="bg"></div>
+<div id="registerContent">
+    <div class="left">
+        <div>
+            
+            <img src="../asset/img/social_map_x_twitter.svg" />
+            <p></p>
+        </div>
+        <img src="" />
+    </div>
+    <div class="right">
+        <div class="header">
+            <p>Déjà membre ?</p>
+            <p>Connexion</p>
+        </div>
+        <div class="form">
+            <div id="stage">
+                <div class="backline"></div>
+                <div class="frontline"></div>
+                <div class="num">
+                    <p>1</p>
+                </div>
+                <div class="num">
+                    <p>2</p>
+                </div>
+                <div class="num">
+                    <p>3</p>
+                </div>
+            </div>
+            <form onsubmit="return false;">
+                <section> </section>
+                <input type='submit' class="submit classicButton" value="" />
+            </form>
+            <div class="buttons"></div>
+        </div>
+        <div></div>
     </div>
 </div>
+<script src="../js/register.js"></script>

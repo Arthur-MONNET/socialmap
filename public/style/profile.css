@@ -1,0 +1,399 @@
+#profileContent{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#bg{
+    height: 100vh;
+}
+
+
+#profileContent>div{
+    height: 100%;
+    display: flex;
+    
+}
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+#profileContent>.right{
+    flex-direction: row;
+    align-items: center;
+    width: 69.5vw;
+    padding: 0 3vw;
+    background-color: var(--bg-blue);
+}
+
+#profileContent>.left{
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 26.5vw;
+}
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+#profileContent>.left>.settings{
+    width:100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#profileContent>.left>.settings>img{
+    width:26.5%;
+    margin-top: 7vh;
+}
+
+#profileContent>.left .settings>h3{
+    margin: 3vh 0 2vh;
+    font-size: 1.5vw;
+}
+
+@media (min-width: 1830px) {
+    #profileContent>.left .settings>h3{
+        font-size: 27.45px;
+    }
+}
+
+/* ---------------------------------------------------------- */
+
+#profileContent>.left .settings>div{
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+#profileContent>.left .settings .scrollSettings{
+    min-width:200%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+#settingProfile{
+    width: 30%;
+    padding: 0 10% ;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+#settingCompany{
+    width: 30%;
+    padding: 0 10% ;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+#profileContent>.left .input{
+    box-shadow: 0px 10px 29px 3px rgba(0,0,0,0.1);
+    width:100%;
+    background-color: white;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+    align-items:stretch;
+    justify-content: stretch;
+    flex-direction: row;
+}
+
+#profileContent>.left .input input{
+    transition: padding 0.3s,width 0.3s;
+    width: 90%;
+    font-size: 0.9vw;
+    background-color: transparent;
+    border-radius: 10px;
+    padding: 1.5vh;
+    border: none;
+}
+
+#profileContent>.left .input input::placeholder{
+    color: var(--gray);
+}
+
+@media (min-width: 2000px) {
+    #profileContent>.left .input input{
+        font-size: 18px;
+    }
+}
+
+#profileContent>.left .input input:focus{
+    outline: none;
+}
+
+#profileContent>.left .input>img{
+    background-color: white;
+    border-radius: 10px;
+    margin: 1vh 1.5vh 1vh 0;
+    border: none;
+}
+#profileContent>.left>.settings p{
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+    font-weight: 600;
+}
+
+#profileContent>.left>.settings .row{
+    display: flex;
+    align-items:stretch;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+}
+
+#profileContent>.left>.settings .groupsWrapper{
+    margin-bottom: 1vh;
+    align-items: center;
+}
+
+#profileContent>.left>.settings .groups{
+    fill: black;
+    background-color: white;
+    border-radius: 10px;
+    margin: 1vh 1.5vh 1vh 0;
+    height: 2vh;
+    border: none;
+}
+#profileContent>.left>.settings .addGroups{
+    fill: var(--gray);
+    border-radius: 10px;
+    margin: 1vh 1.5vh 1vh 0;
+    height: 2vh;
+    border: none;
+}
+#profileContent>.left>.settings .addButton{
+    fill: var(--gray);
+    border-radius: 10px;
+    margin: 1vh 1.5vh;
+    height: 2vh;
+    border: none;
+}
+
+#profileContent>.left>.settings .row>p:nth-child(2){
+    font-weight: 400;
+}
+
+#profileContent>.left>div:nth-child(2){
+    width: 100%;
+    height: calc(4.5vh);
+    background-color: #C4C4C4;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+#buttonsSettings{
+    width: 100%;
+    height: 4vh;
+    margin-bottom: 0.5vh;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: stretch;
+}
+#buttonsSettings>div{
+    cursor: pointer;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#scrollSettings{
+    transition: margin-left 0.6s;
+    width: 50%;
+    margin-left: 0;
+    height: 0.5vh;
+    background-color: var(--yellow);
+    margin-top: -0.5vh;
+}
+
+#profileContent>.left>.settings .addGroupsWrapper>input[type='button']{
+    width:70%;
+    cursor: pointer;
+}
+#profileContent>.left>.settings .addGroupsWrapper{
+    align-items: center;
+    cursor: pointer;
+}
+#profileContent>.left>.settings .teams{
+    margin-left: -5vh;
+    padding: 2vh 5vh 5vh;
+    width: 100%;
+    overflow-x:visible;
+    overflow-y: scroll;
+    max-height: 17vh;
+}
+#profileContent>.left>.settings .gradientTop{
+    z-index: 1;
+    margin-left: -5vh;
+    padding: 0 5vh ;
+    width: 100%;
+    height: 1vh;
+    margin-bottom: -1vh;
+    background: linear-gradient(var(--bg-white), transparent);
+}
+
+#profileContent>.left>.settings .gradientBottom{
+    z-index: 1;
+    margin-left: -5vh;
+    padding: 0 5vh;
+    width: 100%;
+    height: 1vh;
+    margin-top: -1vh;
+    background: linear-gradient(transparent,var(--bg-white));
+}
+
+#profileContent>.left>.settings #titleTeams{
+    margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+#profileContent>.right>div{
+    width: 46%;
+    margin: 0 2%;
+    height: 27vw;
+    max-height: 70vh;
+    display: flex;
+    flex-direction:column;
+    align-items: stretch;
+    justify-content: space-between;
+}
+
+#profileContent>.right .wrapper{
+    border-radius: 10px;
+    background-image: var(--gradient);
+    display: flex;
+    flex-direction:column;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+#profileContent>.right .blurwrapper{
+    height: 100%;
+    border-radius: 10px;
+    background-color: var(--color-gradient);
+    backdrop-filter: blur(100px);
+    padding: 15px 2vw ;
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content:space-between;
+}
+#profileContent>.right h3{
+    margin-bottom: 2vh;
+}
+
+
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+#profileContent .info{
+    margin-bottom: 2vw;
+}
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+
+#profileContent>.right .dataTime{
+    height: 100%;
+}
+
+#timeWrapper{
+    width: 100%;
+    height: 80%;
+    margin: 3% 0; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+#timeDiv{
+    width: 100%;
+    height: calc(100% - 6vh);
+    max-height: 15vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+#timeDiv>div{
+    width: 13%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3vw 0;
+    border-radius: 10px;
+    border: var(--yellow) solid 1px;
+}
+
+#timeDiv>div:nth-last-child(n+3){
+    height: calc(100% - 0.3vw);
+}
+
+#timeDiv>div>svg{
+    width: 1vw;
+}
+
+/* ---------------------------------------------------------- */
+
+#underTimeDiv{
+    padding-top: 1vh;
+    width: 100%;
+    height: 5vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+#underTimeDiv>.line1{
+    width: 57%;
+    margin-left: 6.5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#underTimeDiv>.line2{
+    width: 14%;
+    margin-right: 7.5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#underTimeDiv>div>div{
+    border: solid black 2px;
+    border-top: none;
+    height: 2vh;
+    width: 100%;
+    margin-bottom: 0.5vh;
+}
+#underTimeDiv>div>svg{
+    height: 2vh;
+    padding: 0.2vh 0;
+}
