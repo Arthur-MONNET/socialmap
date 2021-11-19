@@ -1,5 +1,6 @@
 #bg{
     z-index: -10;
+    height: auto;
     width: 100vw;
     position: absolute;
     background-color: var(--bg-white);
