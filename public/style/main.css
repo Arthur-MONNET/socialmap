@@ -13,6 +13,9 @@ html {
 }
 
 body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     color: #000;
     font-family: "Century Gothic", helvetica, arial, sans-serif;
     font-size: 1.4em;
@@ -57,24 +60,6 @@ h1,
     font-weight: normal;
     line-height: 1.6154em;
     margin: .8077em 0 0 0;
-}
-
-h2,
-.h2-like {
-    font-size: 1.7143em;
-    /* equiv 24px */
-    font-weight: normal;
-    line-height: 1.75em;
-    margin: .875em 0 0 0;
-}
-
-h3,
-.h3-like {
-    font-size: 1.5714em;
-    /* equiv 22px */
-    font-weight: normal;
-    line-height: 1.909em;
-    margin: .9545em 0 0 0;
 }
 
 h4,

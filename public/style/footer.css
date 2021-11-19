@@ -1,0 +1,28 @@
+footer{
+    background-color: var(--bg-blue);
+    height: 7vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    color:white;
+}
+footer>button{
+    background: transparent;
+    border: none;
+    color:white
+}
+footer>div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+footer>div>svg{
+    fill:var(--yellow);
+    height: 25px;
+}
+footer>img{
+    height:30px;
+}
