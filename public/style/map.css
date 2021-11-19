@@ -1,3 +1,9 @@
+#mapContent{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
 #map {
     width: 100%;
     height: 100%;
@@ -5,4 +11,39 @@
 }
 .country {
     background: blueviolet;
+}
+
+#tweets {
+    background-image: url('https://static.cdnlogo.com/logos/t/96/twitter-icon.svg');
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+     
+.mapboxgl-popup {
+    max-width: 200px;
+}
+
+#tweetsView {
+    width: 200px;
+    height: 100vh;
+    position: absolute;
+    z-index: 2;
+    background-color: turquoise;
+    display: block;
+}
+
+.tweets {
+    margin-top: 10px;
+    padding: 5px;
+    background-color: thistle;
+}
+
+.tweetI {
+    width: fit-content;
+    padding: 2px;
+    background-color: tomato;
+    border: aliceblue 2px solid;
 }

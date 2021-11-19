@@ -5,7 +5,7 @@
 @import './footer.css';
 @import './bg.css';
 
-#error, #map, #loading, #home,/*  #profile, */ #register, #login{
+#error, /*#map,*/ #loading, #home, #profile, #register, #login{
     display: none
 }
 
@@ -274,38 +274,4 @@ body>script {
 ::-webkit-scrollbar {
     width: 0;
     display: none;
-}
-
-#tweets {
-    background-image: url('https://static.cdnlogo.com/logos/t/96/twitter-icon.svg');
-    background-size: cover;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-     
-.mapboxgl-popup {
-    max-width: 200px;
-}
-
-#tweetsView {
-    width: 200px;
-    height: 500px;
-    position: absolute;
-    z-index: 2;
-    background-color: turquoise;
-}
-
-.tweets {
-    margin-top: 10px;
-    padding: 5px;
-    background-color: thistle;
-}
-
-.tweetI {
-    width: fit-content;
-    padding: 2px;
-    background-color: tomato;
-    border: aliceblue 2px solid;
 }
