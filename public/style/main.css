@@ -5,7 +5,7 @@
 @import './footer.css';
 @import './bg.css';
 
-#error,/*  #map, */ #loading, #home, #profile, #register, #login{
+#error, /* #map, */ #loading, #home, #profile, #register, #login{
     display: none
 }
 

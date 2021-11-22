@@ -10,11 +10,90 @@
 </head>
 
 <body id="mapContent">
-    <div id="tweetsView"> 
-        <input id="searchInput">
-        <button id="search">Recherche</button>
-        <div id="tweets"></div>
+    <div id="tweetsViewWrapper">
+        <div id="tweetsView">
+            <div id="buttonsPageWrapper">
+                <div id="buttonsPage">
+                    <div class="b1">
+                        <p class="b1">Mes Tweets</p>
+                    </div>
+                    <div class="b2">
+                        <p class="b2">Rechercher</p>
+                    </div>
+                    <div class="b3">
+                        <p class="b3">Suivis</p>
+                    </div>
+                </div>
+                <div id="scrollPage"></div>
+            </div>
+            <div id='scrollWrapper'>
+                <div>
+                    <div id="myTweetsPage">
+                        <div id="titleMyTweets">
+                            <img class="profileTweet" src=""/>
+                            <p class="nameTweet"></p>
+                            <p class="atTweet"></p>
+                        </div>
+                        <div class="timeLineWrapper">
+                            <div class="separatorLine"></div>
+                            <div class="timeLine">
+                                <div class="line"></div>
+                                <div class="arrowRight"></div>
+                                <div class="pointWrapper">
+                                    <div class="point"></div>
+                                    <div class="textPoint"></div>
+                                </div>
+                            </div>
+                            <div class="separatorLine"></div>
+                        </div>
+                        <div class="tweets">
+                            <div class="content"></div>
+                            <div class="numPage"></div>
+                        </div>
+                    </div>
+                    <div id="searchPage">
+                        <input id="search">Recherche<img/></input>
+                        <div class="timeLineWrapper">
+                            <div class="separatorLine"></div>
+                            <div class="timeLine">
+                                <div class="line"></div>
+                                <div class="arrowRight"></div>
+                                <div class="pointWrapper">
+                                    <div class="point"></div>
+                                    <div class="textPoint"></div>
+                                </div>
+                            </div>
+                            <div class="separatorLine"></div>
+                        </div>
+                        <div class="tweets">
+                            <div class="content"></div>
+                            <div class="numPage"></div>
+                        </div>
+                    </div>
+                    <div id="followPage">
+                        <div class="gradientTop"></div>
+                        <div class="teams">
+                            <div class="input followWrapper">
+                            </div>
+                            <div class="input addFollowWrapper">
+                                <input type="text" placeholder="Team Code" style="width: 0; padding: 1.5vh 0;" />
+                                <svg width="22" height="22" viewBox="0 0 22 22" class="addButton"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12.5714 12.5714V22H9.42857V12.5714H0V9.42857H9.42857V0H12.5714V9.42857H22V12.5714H12.5714Z" />
+                                </svg>
+                                <input type="button"/>
+                            </div>
+                        </div>
+                        <div class="gradientBottom"></div>
+                    </div>
+                </div>
+                
+            </div>
+            <div></div>
+        </div>
     </div>
-    <div id="map" style="height: 100vh; margin: 0"></div>
+
+    <div id="map"></div>
     <script type="module" src="../js/map.js"></script>
 </body>

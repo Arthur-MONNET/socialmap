@@ -1,8 +1,8 @@
+import countries from '../asset/world.js'
 const search = document.getElementById('search')
 const searchInput = document.getElementById('searchInput')
 const tweetsDiv = document.getElementById('tweets')
 let tweetsInsered = document.getElementsByClassName('tweetI')
-
 $.ajax({
     url: "/mapToken",
     type: "POST",
@@ -18,7 +18,7 @@ async function addMarker(nbTweets, token) {
     const temp = await getUser()
     const geocodeUser = await getAdressGeocode(token, JSON.parse(temp).data.location)
     const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
-    if (temp2._realData.includes.places[nbTweets].geo.bbox[0]) {
+    if (temp2._realData.includes.places) {
         return [temp2._realData.includes.places[nbTweets].geo.bbox[0], temp2._realData.includes.places[nbTweets].geo.bbox[1]]
     } else {
         return geocodeUser.geometry.coordinates
@@ -45,6 +45,14 @@ async function addPopup(nbTweets) {
             Like: ${temp2._realData.data[nbTweets].public_metrics.like_count}<br>
             Reponse: ${temp2._realData.data[nbTweets].public_metrics.reply_count}
         `,'id': temp2._realData.data[nbTweets].id }
+}
+
+function getIdCountry(listCountries, allCountries){
+    let countries = allCountries.filter(country=>listCountries.includes(country.properties.ISO_A2))
+    console.log(countries)
+    let idCountries =[]
+    for(let i in countries)idCountries.push(countries[i].id)
+    return idCountries
 }
 
 async function getAdressGeocode(token, adress){
@@ -75,7 +83,7 @@ function drawMap (response) {
 
         map.addSource('country', {
             type: 'geojson',
-            data: '../asset/world.geojson'
+            data: countries
         })
                         
         map.addLayer({
@@ -98,6 +106,40 @@ function drawMap (response) {
                 }
             }
         })
+        map.addLayer({
+            'id': 'retweets',
+            'type': 'fill',
+            'source': 'country',
+            'layout': {},
+            'paint': {
+                'fill-color': [
+                    'case',
+                    ['boolean', ['feature-state', 'retweets'], false],
+                    '#DEFD6D',
+                    'rgba(0,0,0,0)'
+                ],
+                // blue color fill
+                'fill-opacity': 0.5,
+                'fill-color-transition': {
+                    'duration': 5000,
+                    'delay': 0
+                }
+            }
+        })
+       
+        let allCountries = map.getSource('country')._data.features
+
+        search.onclick = ()=>{
+            let listCountries=['FR','US','BR','GB']
+            let idCountries=getIdCountry([searchInput.value], allCountries)
+            idCountries.forEach(idCountry=>{
+                map.setFeatureState(
+                    { source: 'country', id: idCountry },
+                    { retweets: true }
+                )
+            })
+            
+        }
         map.addControl(new mapboxgl.NavigationControl());            
         map.addLayer({
             'id': 'outline',
@@ -105,7 +147,7 @@ function drawMap (response) {
             'source': 'country',
             'layout': {},
             'paint': {
-                'line-color': '#FFFFFF',
+                'line-color': 'rgba(255,255,255,0.5)',
                 'line-width': 0.25
             }
         })
@@ -137,7 +179,7 @@ function drawMap (response) {
             map.getCanvas().style.cursor = '';
         })
 
-        map.on('mouseenter', 'country-fills', () => {
+        map.on('mouseenter', 'country', () => {
             map.getCanvas().style.cursor = 'pointer';
         })
 
