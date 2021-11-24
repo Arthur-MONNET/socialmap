@@ -1,5 +1,8 @@
 import countries from '../asset/world.js'
 const search = document.getElementById('search')
+let buttonsPage = document.querySelector('#buttonsPage')
+let pagesWrapper = document.querySelector('#scrollWrapper')
+let pages = pagesWrapper.querySelector('div')
 const searchInput = document.getElementById('searchInput')
 const tweetsDiv = document.getElementById('tweets')
 let tweetsInsered = document.getElementsByClassName('tweetI')
@@ -131,7 +134,7 @@ function drawMap (response) {
 
         search.onclick = ()=>{
             let listCountries=['FR','US','BR','GB']
-            let idCountries=getIdCountry([searchInput.value], allCountries)
+            let idCountries=getIdCountry([search.value], allCountries)
             idCountries.forEach(idCountry=>{
                 map.setFeatureState(
                     { source: 'country', id: idCountry },
@@ -203,7 +206,7 @@ function drawMap (response) {
         }
         addMarkers()
         search.addEventListener('click', (e) =>{
-            console.log(searchInput.value)
+            console.log(search.value)
         })
         let retweetsList = []
         function addClickTweets() {
@@ -309,3 +312,18 @@ function quotedOf(tweetId) {
         }
     })
 }
+
+buttonsPage.addEventListener('click', e => {
+    if (e.target.classList.contains("b1")) {
+        pages.style.left= 0
+        scrollPage.style.marginLeft = '0'
+    }
+    else if (e.target.classList.contains("b2")) {
+        scrollPage.style.marginLeft = 'calc(100% / 3)'
+        pages.style.left= '-'+pages.scrollWidth * 1 / 3;
+    }
+    else if (e.target.classList.contains("b3")) {
+        scrollPage.style.marginLeft = 'calc(100% / 3 * 2)'
+        pages.style.left= '-'+pages.scrollWidth * 2 / 3
+    }
+})
