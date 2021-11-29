@@ -201,8 +201,8 @@ function drawMap(response) {
                 if (!popupTextId) {
                     break
                 }
-                /* let inTweet = 
-                                `<div class="tweet" id="${popupTextId.id}>
+                let inTweet = 
+                                `<div class="tweetI" id="${popupTextId.id}">
                                     <img class="profileTweet" src="${popupTextId.element.photo}"/>
                                     <div>
                                         <div>
@@ -214,8 +214,8 @@ function drawMap(response) {
                                         </div>
                                         <p class="contentTweet descTweet">${popupTextId.element.text}</p>
                                     </div>
-                                </div>` */
-                tweetsDiv.insertAdjacentHTML('afterBegin', `<div class="tweetI" id="${popupTextId.id}"><p>${popupTextId.HTML}</p></div>`)
+                                </div>`
+                tweetsDiv.insertAdjacentHTML('afterBegin', inTweet)
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     popupTextId.HTML
                 )

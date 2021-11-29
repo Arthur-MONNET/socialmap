@@ -414,3 +414,33 @@ body{
 .content{
     width: 100%;
 }
+
+.tweetI{
+    width: calc(100% - 4vh);
+    height: 6vh;
+    max-height: 55px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 1vh 1.5vh;
+    margin-bottom: 1vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: flex-start;
+}
+.tweetI>div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+}
+.tweetI>div>div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
