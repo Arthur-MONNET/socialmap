@@ -18,7 +18,7 @@ async function addMarker(nbTweets, token) {
     const temp = await getUser()
     const geocodeUser = await getAdressGeocode(token, JSON.parse(temp).data.location)
     const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
-    if (temp2._realData.includes.places[nbTweets].geo.bbox[0]) {
+    if (temp2._realData.includes.places[nbTweets]) {
         return [temp2._realData.includes.places[nbTweets].geo.bbox[0], temp2._realData.includes.places[nbTweets].geo.bbox[1]]
     } else {
         return geocodeUser.geometry.coordinates
@@ -28,23 +28,14 @@ async function addMarker(nbTweets, token) {
 async function addPopup(nbTweets) {
     const temp = await getUser()
     const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
-    /* const retweets = await quotedOf(temp2._realData.data[nbTweets].id)
-    let placeRetweets = ''
-    if (retweets._realData.includes.places) {
-        for (const place in retweets._realData.includes.places) {
-            console.log(place)
-            placeRetweets += place
-        }
-    } else {
-        for (let i = 0; i < retweets._realData.includes.users.length; i++) {
-            placeRetweets += retweets._realData.includes.users[i].location
-        }
-    } */
-    return {'HTML': `<em>${temp2._realData.data[nbTweets].text}</em><br>
+    if ( temp2._realData.data[nbTweets] ) {
+        return {'HTML': `<em>${temp2._realData.data[nbTweets].text}</em><br>
             Retweet: ${temp2._realData.data[nbTweets].public_metrics.retweet_count+temp2._realData.data[nbTweets].public_metrics.quote_count}<br>
             Like: ${temp2._realData.data[nbTweets].public_metrics.like_count}<br>
             Reponse: ${temp2._realData.data[nbTweets].public_metrics.reply_count}
-        `,'id': temp2._realData.data[nbTweets].id }
+            `,'id': temp2._realData.data[nbTweets].id }
+    }
+    
 }
 
 async function getAdressGeocode(token, adress){
@@ -146,6 +137,9 @@ function drawMap (response) {
             const nbTweets = JSON.parse(await getUser()).data.public_metrics.tweet_count
             for (let i=0; i<nbTweets; i++) {
                 const popupTextId = await addPopup(i)
+                if (!popupTextId) {
+                    break
+                }
                 tweetsDiv.insertAdjacentHTML('afterBegin', `<div class="tweetI" id="${popupTextId.id}"><p>${popupTextId.HTML}</p></div>`)
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     popupTextId.HTML
@@ -159,9 +153,10 @@ function drawMap (response) {
             }
             addClickTweets()
         }
-        addMarkers()
         search.addEventListener('click', (e) =>{
             console.log(searchInput.value)
+            tweetsDiv.innerHTML = ''
+            addMarkers()
         })
         let retweetsList = []
         function addClickTweets() {
@@ -170,6 +165,7 @@ function drawMap (response) {
             const arrayTweetsDiv = Array.prototype.slice.call( tweetsInsered )
             arrayTweetsDiv.forEach(el => {
                 el.addEventListener('click', async () =>{
+                    retweetsList = []
                     await addRetweetsMarker(el.id)
                     console.log(retweetsList)
                     el.style.backgroundColor= '#1DA9B9'
@@ -186,27 +182,33 @@ function drawMap (response) {
             const retweets = await quotedOf(id)
             let locationRetweet = ''
             let all = {}
-            retweets._realData.data.forEach((l, i) => {
+            retweets._realData.data.forEach( async (l, i) => {
                 if (retweets._realData.includes.places) {
                     locationRetweet = retweets._realData.includes.places[i]
                 } else if(retweets._realData.includes.users[i].location) {
                     locationRetweet = retweets._realData.includes.users[i].location
                 }
                 all.location = locationRetweet
-                all.user = retweets._realData.includes.users[i].name
-                all.user = l.text
-                console.log('retweets', all)
-                return addMarkerRetweet(all)
-            })
-            async function addMarkerRetweet(object) {
                 if (typeof object.location !== Array) {
                     object.location = await getAdressGeocode(response, object.location)
                     object.location = object.location.center
                 }
-                console.log(object)
-                return retweetsList.push(object)
-            }
+                all.user = retweets._realData.includes.users[i].name
+                all.text = l.text
+                all.index = i
+                addLineRetweet(all, i)
+            })
             
+        }
+        async function addLineRetweet(object, i) {
+            console.log('add line', i)
+            console.log('add line i', object, i)
+            if (typeof object.location !== Array) {
+                object.location = await getAdressGeocode(response, object.location)
+                object.location = object.location.center
+                console.log ('in if', object)
+            }
+            console.log(object, i)
         }
     })
 }

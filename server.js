@@ -37,7 +37,7 @@ app.post('/searchUserName', (req, res) =>{
 })
 
 app.post('/userTweets', (req, res) => {
-    client.v2.userTimeline(req.query['id'], {"expansions": 'geo.place_id',"tweet.fields": ['geo', 'public_metrics'],'place.fields': ['contained_within', 'country', 'geo']})
+    client.v2.userTimeline(req.query['id'], {"expansions": 'geo.place_id',"tweet.fields": ['geo', 'public_metrics'],'place.fields': ['contained_within', 'country', 'geo'], "exclude": ['replies', 'retweets']})
     .then(response =>
         res.send(response))
     .catch(error => console.error(error))
