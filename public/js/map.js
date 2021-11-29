@@ -74,7 +74,7 @@ function drawMap(response) {
         container: 'map',
         style: 'mapbox://styles/zak74/ckuzm2lot0yjg14s4e5k4202y',
         center: [5, 45],
-        zoom: 1
+        zoom: 4.5
     })
     let hoveredCountryId = null
     map.on('load', () => {
@@ -135,14 +135,8 @@ function drawMap(response) {
 
         let allCountries = map.getSource('country')._data.features
 
-        search.onclick = () => {
+        search.onclick = () => {map.flyTo({center: [0, 0], zoom: 2.5});
 
-            map.zoomTo(2.5, {
-                center: [
-                    48.8534,
-                    2.3488
-                ], duration: 1000
-            })
             let listCountries = ['FR', 'US', 'BR', 'GB']
             let idCountries = getIdCountry([searchInput.value], allCountries)
             idCountries.forEach(idCountry => {
@@ -151,7 +145,6 @@ function drawMap(response) {
                     { retweets: true }
                 )
             })
-
         }
         map.addControl(new mapboxgl.NavigationControl());
         map.addLayer({

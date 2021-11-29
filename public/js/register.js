@@ -3,6 +3,8 @@ let formWrapper = register.querySelector('.form')
 let stageLine = formWrapper.querySelector('#stage')
 let form = formWrapper.querySelector('form')
 let stage = 1;
+let dataUser = {}
+let dataTeam = {}
 
 const lettre = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 function randomChar() {
@@ -14,20 +16,20 @@ function randomChar() {
 let fs1 = `<div>
 <div>
     <p>Nom</p>
-    <input type='text' class="lastname" placeholder="Nom" required/>
+    <input type='text' name="lastname" class="lastname" placeholder="Nom" required/>
 </div>
 <div>
     <p>Prénom</p>
-    <input type='text' class="firstname" placeholder="Prénom" required />
+    <input type='text' name="firstname" class="firstname" placeholder="Prénom" required />
 </div>
 </div>
 <p>Poste occupé</p>
-<input type='text' class="post" placeholder="Poste occupé" required />`
+<input type='text' name="post" class="post" placeholder="Poste occupé" required />`
 
 let fs2 = `<p>E-mail</p>
-<input type='email' class="email" placeholder="E-mail" required />
+<input type='email' name="email" class="email" placeholder="E-mail" required />
 <p>Mot de passe</p>
-<input type='password' class="pwd" placeholder="Mot de passe" required/>`
+<input type='password' name="pwd" class="pwd" placeholder="Mot de passe" required/>`
 
 let fs3 = `<div id="fs3">
 <input type="radio" name="fs3" style="display: none;" class="check" id="solo" value="solo" checked>
@@ -59,11 +61,11 @@ let fs3 = `<div id="fs3">
 </div>`
 
 let fs4 = `<p>Nom de mon espace d’équipe</p>
-<input type='text' class="teamName" placeholder="Nom" required />
+<input type='text' name="teamName" class="teamName" placeholder="Nom" required />
 <p>E-Mail de mes coéquipiers</p>
 <div class="gradientTop"></div>
 <div class="teamMails">
-<input type='email' class="teamMail" placeholder="E-mail" required/>
+<input type='email' class="teamMail" placeholder="E-mail"/>
 <button type="button" class="addMail"><svg width="22" height="22" viewBox="0 0 22 22"
 fill="none" xmlns="http://www.w3.org/2000/svg">
 <path
@@ -77,21 +79,21 @@ fill="none" xmlns="http://www.w3.org/2000/svg">
 let fs5 = `<div>
 <div>
     <p>Nom de l’entreprise</p>
-    <input type='text' class="company" placeholder="Entreprise" required />
+    <input type='text' name="company" class="company" placeholder="Entreprise" required />
 </div>
 <div>
     <p>Twitter de l’entreprise</p>
-    <input type='text' class="companyTwitter" placeholder="@Entreprise" required />
+    <input type='text' name="companyTwitter" class="companyTwitter" placeholder="@Entreprise" required />
 </div>
 </div>
 <div>
 <div>
     <p>Secteur d’activité</p>
-    <input type='text' class="activity" placeholder="Activité" required />
+    <input type='text' name="activity" class="activity" placeholder="Activité" required />
 </div>
 <div>
     <p>Localisation du siege sociale</p>
-    <input type='text' class="Location" placeholder="Localisation" required /
+    <input type='text' name="location" class="location" placeholder="Localisation" required /
      
 </div>
 </div>`
@@ -118,14 +120,14 @@ let buttons = `<div class="ou">
 </div>`
 
 
-let rdmText =[
+let rdmText = [
     '67% de toutes les entreprises B2B utilisent Twitter comme outil de marketing digital.',
     '40% des utilisateurs ont effectué un achat après l’avoir vu sur Twitter.',
     'Lançons nous ensemble, et surement.',
     'Dirigez vos campagnes n’a jamais été aussi simple :)'
 ]
 
-register.querySelector('.left p').innerHTML=rdmText[Math.floor(Math.random()*rdmText.length)]
+register.querySelector('.left p').innerHTML = rdmText[Math.floor(Math.random() * rdmText.length)]
 let submitText = [{ text: 'Suivant', class: 'blueRightButton', onsubmit: 'transformPage(2);' },
 { text: 'Suivant', class: 'blueRightButton', onsubmit: 'transformPage(3);' },
 { text: 'Créer un workspace', class: 'blueCenterButton', onsubmit: '' },
@@ -133,12 +135,12 @@ let submitText = [{ text: 'Suivant', class: 'blueRightButton', onsubmit: 'transf
 { text: 'Inscription', class: 'yellowRightButton', name: 'mappage', onsubmit: '' }]
 function transformPage(i) {
     stage = i
-    register.querySelector('.left p').innerHTML=rdmText[Math.floor(Math.random()*rdmText.length)]
+    register.querySelector('.left p').innerHTML = rdmText[Math.floor(Math.random() * rdmText.length)]
     stageLine.querySelector('.frontline').style.width = `calc((25vw - 5vh) / 4 * ${i - 1})`
     stageLine.querySelector('.frontline').style.maxWidth = `calc((600px - 5vh) / 4 * ${i - 1})`
     form.querySelector('section').innerHTML = eval("fs" + i)
     form.querySelector('.submit').value = submitText[i - 1].text
-    form.querySelector('.submit').name = (submitText[i - 1].name)?submitText[i - 1].name:'';
+    form.querySelector('.submit').name = (submitText[i - 1].name) ? submitText[i - 1].name : '';
     form.querySelector('.submit').classList.remove("blueRightButton", "blueCenterButton", "yellowRightButton")
     form.querySelector('.submit').classList.remove()
     form.querySelector('.submit').classList.add(submitText[i - 1].class)
@@ -172,6 +174,7 @@ document.addEventListener("keyup", function (e) {
 });
 
 form.addEventListener("submit", () => {
+
     if (stage === 3) {
         let data = new FormData(form);
         for (const entry of data) {
@@ -192,8 +195,22 @@ form.addEventListener("submit", () => {
             }
         };
     } else {
-        console.log(submitText[stage - 1].onsubmit)
+        form.querySelectorAll('section input').forEach(input => {
+            console.log(input.name)
+            if (input.name === "teamName") {
+                dataTeam.teamName = input.value
+            } else {
+                dataUser[input.name] = input.value
+            }
+        });
+        if (stage === 5) {
+            console.log(dataUser)
+            for(let propUser in dataUser){
+                sessionStorage.setItem('user'+propUser,dataUser[propUser])
+            }
+        }
         eval(submitText[stage - 1].onsubmit)
+        
     }
 });
 
@@ -203,14 +220,14 @@ form.addEventListener('click', e => {
         navigator.clipboard.writeText(copyText);
         alert("Votre code de workspace a bien été copié !");
     }
-    if (e.target.classList.contains("addMail")||e.target.parentElement.classList.contains("addMail")||e.target.parentElement.parentElement.classList.contains("addMail")) {
+    if (e.target.classList.contains("addMail") || e.target.parentElement.classList.contains("addMail") || e.target.parentElement.parentElement.classList.contains("addMail")) {
         let newNode = document.createElement("input")
-        newNode.type = 'email', newNode.classList.add('teamMail'), newNode.placeholder = 'E-mail', newNode.setAttribute("required","")
-        form.querySelector('.teamMail:nth-last-child(2)').insertAdjacentElement('afterend',newNode)
+        newNode.type = 'email', newNode.classList.add('teamMail'), newNode.placeholder = 'E-mail', newNode.setAttribute("required", "")
+        form.querySelector('.teamMail:nth-last-child(2)').insertAdjacentElement('afterend', newNode)
         form.querySelector('.teamMail:nth-last-child(2)').focus()
-        form.querySelector('.teamMails').scrollTop=form.querySelector('.teamMails').scrollHeight;
+        form.querySelector('.teamMails').scrollTop = form.querySelector('.teamMails').scrollHeight;
     }
-},false)
+}, false)
 
 
 
