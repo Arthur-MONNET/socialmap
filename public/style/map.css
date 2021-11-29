@@ -347,8 +347,7 @@ body{
     align-items: center;
     justify-content: center;
 }
-#searchWrapper>div>div>p{
-}
+
 #searchWrapper>div>div>svg{
     margin-left: 5px;
     height: 70%;
@@ -410,4 +409,8 @@ body{
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
+}
+
+.content{
+    width: 100%;
 }

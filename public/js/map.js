@@ -5,7 +5,7 @@ let timeLines = document.querySelectorAll('.timeLineWrapper')
 let buttonsPage = document.querySelector('#buttonsPage')
 let pagesWrapper = document.querySelector('#scrollWrapper')
 let pages = pagesWrapper.querySelector('div')
-const tweetsDiv = document.getElementById('content')
+const tweetsDiv = document.getElementsByClassName('content')[1]
 let tweetsInsered = document.getElementsByClassName('tweetI')
 $.ajax({
     url: "/mapToken",
@@ -32,6 +32,8 @@ async function addMarker(nbTweets, token) {
 async function addPopup(nbTweets) {
     const temp = await getUser()
     const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
+    console.log(JSON.parse(temp).data)
+    console.log(temp2._realData)
     if (temp2._realData.data[nbTweets]) {
         return {
             'HTML': `<em>${temp2._realData.data[nbTweets].text}</em><br>
@@ -39,7 +41,15 @@ async function addPopup(nbTweets) {
                 Like: ${temp2._realData.data[nbTweets].public_metrics.like_count}<br>
                 Reponse: ${temp2._realData.data[nbTweets].public_metrics.reply_count}
             `, 
-            'id': temp2._realData.data[nbTweets].id
+            'id': temp2._realData.data[nbTweets].id,
+            'element': {
+                'photo': JSON.parse(temp).data.profile_image_url,
+                'name': JSON.parse(temp).data.name,
+                'username': JSON.parse(temp).data.username,
+                'date': temp2._realData.data[nbTweets].created_at,
+                'text': temp2._realData.data[nbTweets].text,
+                'location': JSON.parse(temp).data.location
+            }
         }
     }
     
@@ -128,14 +138,14 @@ function drawMap(response) {
 
         let allCountries = map.getSource('country')._data.features
 
-        search.onclick = () => {map.flyTo({center: [0, 0], zoom: 2.5});
-
-            let listCountries = ['FR', 'US', 'BR', 'GB']
-            let idCountries = getIdCountry([searchInput.value], allCountries)
-            idCountries.forEach(idCountry => {
+        search.onclick = () => {
+            document.querySelectorAll('.tweetsMarker').forEach(function(tweetMarker) {
+                tweetMarker.remove()
+              })
+            allCountries.forEach(idCountry => {
                 map.setFeatureState(
-                    { source: 'country', id: idCountry },
-                    { retweets: true }
+                    { source: 'country', id: idCountry.id },
+                    { retweets: false }
                 )
             })
         }
@@ -187,9 +197,24 @@ function drawMap(response) {
             const nbTweets = JSON.parse(await getUser()).data.public_metrics.tweet_count
             for (let tweetInfo = 0; tweetInfo < nbTweets; tweetInfo++) {
                 const popupTextId = await addPopup(tweetInfo)
+                console.log(popupTextId)
                 if (!popupTextId) {
                     break
                 }
+                /* let inTweet = 
+                                `<div class="tweet" id="${popupTextId.id}>
+                                    <img class="profileTweet" src="${popupTextId.element.photo}"/>
+                                    <div>
+                                        <div>
+                                            <div>
+                                                <p class="contentTweet nameTweet">${popupTextId.element.name}</p>
+                                                <p class="contentTweet atTweet">@${popupTextId.element.username}</p>
+                                            </div>
+                                            <p class="contentTweet date&Loc">${popupTextId.element.date} - ${popupTextId.element.location} </p>
+                                        </div>
+                                        <p class="contentTweet descTweet">${popupTextId.element.text}</p>
+                                    </div>
+                                </div>` */
                 tweetsDiv.insertAdjacentHTML('afterBegin', `<div class="tweetI" id="${popupTextId.id}"><p>${popupTextId.HTML}</p></div>`)
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     popupTextId.HTML
@@ -213,6 +238,7 @@ function drawMap(response) {
             const arrayTweetsDiv = Array.prototype.slice.call(tweetsInsered)
             arrayTweetsDiv.forEach(tweetContainer => {
                 tweetContainer.addEventListener('click', async () =>{
+                    /* map.flyTo({center: [0, 0], zoom: 2.5}) */
                     allCountries.forEach(idCountry => {
                         map.setFeatureState(
                             { source: 'country', id: idCountry.id },
