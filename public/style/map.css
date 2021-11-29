@@ -212,7 +212,7 @@ body{
     justify-content: space-between;
     padding-top: 3vh;
 }
-.tweets>.content{
+.tweets>#content{
     height :100%;
     width: 100%;
     display: flex;
@@ -335,4 +335,14 @@ body{
     justify-content: center;
     align-items: center;
     background-color: var(--yellow);
+}
+
+
+.tweetsMarker {
+    background-image: url('https://static.cdnlogo.com/logos/t/96/twitter-icon.svg');
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
 }

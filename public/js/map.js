@@ -4,7 +4,7 @@ let timeLines = document.querySelectorAll('.timeLineWrapper')
 let buttonsPage = document.querySelector('#buttonsPage')
 let pagesWrapper = document.querySelector('#scrollWrapper')
 let pages = pagesWrapper.querySelector('div')
-const tweetsDiv = document.getElementById('tweets')
+const tweetsDiv = document.getElementById('content')
 let tweetsInsered = document.getElementsByClassName('tweetI')
 $.ajax({
     url: "/mapToken",
@@ -31,18 +31,21 @@ async function addMarker(nbTweets, token) {
 async function addPopup(nbTweets) {
     const temp = await getUser()
     const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
-    return {
-        'HTML': `<em>${temp2._realData.data[nbTweets].text}</em><br>
-            Retweet: ${temp2._realData.data[nbTweets].public_metrics.retweet_count + temp2._realData.data[nbTweets].public_metrics.quote_count}<br>
-            Like: ${temp2._realData.data[nbTweets].public_metrics.like_count}<br>
-            Reponse: ${temp2._realData.data[nbTweets].public_metrics.reply_count}
-        `, 'id': temp2._realData.data[nbTweets].id
+    if (temp2._realData.data[nbTweets]) {
+        return {
+            'HTML': `<em>${temp2._realData.data[nbTweets].text}</em><br>
+                Retweet: ${temp2._realData.data[nbTweets].public_metrics.retweet_count}<br>
+                Like: ${temp2._realData.data[nbTweets].public_metrics.like_count}<br>
+                Reponse: ${temp2._realData.data[nbTweets].public_metrics.reply_count}
+            `, 
+            'id': temp2._realData.data[nbTweets].id
+        }
     }
+    
 }
 
 function getIdCountry(listCountries, allCountries) {
     let countries = allCountries.filter(country => listCountries.includes(country.properties.ISO_A2))
-    console.log(countries)
     let idCountries = []
     for (let i in countries) idCountries.push(countries[i].id)
     return idCountries
@@ -54,6 +57,8 @@ async function getAdressGeocode(token, adress) {
         return geocode.features[0]
     }
 }
+
+let retweetsList = []
 
 function drawMap(response) {
     mapboxgl.accessToken = response
@@ -179,8 +184,8 @@ function drawMap(response) {
         // add marker for tweets 
         async function addMarkers() {
             const nbTweets = JSON.parse(await getUser()).data.public_metrics.tweet_count
-            for (let i = 0; i < nbTweets; i++) {
-                const popupTextId = await addPopup(i)
+            for (let tweetInfo = 0; tweetInfo < nbTweets; tweetInfo++) {
+                const popupTextId = await addPopup(tweetInfo)
                 if (!popupTextId) {
                     break
                 }
@@ -189,70 +194,98 @@ function drawMap(response) {
                     popupTextId.HTML
                 )
                 const el = document.createElement('div')
-                el.id = 'tweets'
+                el.id = popupTextId.id
+                el.classList.add('tweetsMarker')
                 var marker = new mapboxgl.Marker(el)
-                    .setLngLat(await addMarker(i, response))
+                    .setLngLat(await addMarker(tweetInfo, response))
                     .setPopup(popup)
                     .addTo(map)
             }
             addClickTweets()
         }
         search.addEventListener('click', (e) =>{
-            console.log(searchInput.value)
             tweetsDiv.innerHTML = ''
             addMarkers()
         })
-        let retweetsList = []
         function addClickTweets() {
-            retweetsList = []
             tweetsInsered = document.getElementsByClassName('tweetI')
             const arrayTweetsDiv = Array.prototype.slice.call(tweetsInsered)
-            arrayTweetsDiv.forEach(el => {
-                el.addEventListener('click', async () =>{
-                    retweetsList = []
-                    await addRetweetsMarker(el.id)
-                    console.log(retweetsList)
-                    el.style.backgroundColor = '#1DA9B9'
+            arrayTweetsDiv.forEach(tweetContainer => {
+                tweetContainer.addEventListener('click', async () =>{
+                    allCountries.forEach(idCountry => {
+                        map.setFeatureState(
+                            { source: 'country', id: idCountry.id },
+                            { retweets: false }
+                        )
+                    })
+                    let retweet_list = await addRetweetsLine(tweetContainer.id)
+                    removeOtherTweets(tweetContainer.id)
+                    tweetContainer.style.backgroundColor = '#1DA9B9'
                     for (let i = 0; i < arrayTweetsDiv.length; i++) {
-                        if (arrayTweetsDiv[i].id !== el.id) {
+                        if (arrayTweetsDiv[i].id !== tweetContainer.id) {
                             arrayTweetsDiv[i].style.backgroundColor = 'tomato'
                         }
                     }
+                    addLines(retweet_list)
                 })
             })
         }
 
-        async function addRetweetsMarker(id) {
+        function removeOtherTweets(tweetId) {
+            let allTweetsMarker = document.getElementsByClassName('tweetsMarker')
+            let arrayTweetsMarker = Array.prototype.slice.call( allTweetsMarker )
+            arrayTweetsMarker.forEach((tweetMarker) => {
+                if (tweetMarker.id !== tweetId) {
+                    tweetMarker.style.display="none"
+                } else {
+                    tweetMarker.style.display="block"
+                }
+            })
+
+        }
+
+        async function addRetweetsLine(id) {
+            let list_retweets = []
             const retweets = await quotedOf(id)
             let locationRetweet = ''
-            let all = {}
-            retweets._realData.data.forEach( async (l, i) => {
-                if (retweets._realData.includes.places) {
-                    locationRetweet = retweets._realData.includes.places[i]
-                } else if (retweets._realData.includes.users[i].location) {
-                    locationRetweet = retweets._realData.includes.users[i].location
+            let geocode = []
+            if (retweets.data){
+                for (let retweet of retweets.data) {
+                    let all = {}
+                    if (retweet.location) {
+                        locationRetweet = retweet.location
+                        locationRetweet = await getAdressGeocode(response, retweet.location)
+                        geocode = locationRetweet.center
+                        if (locationRetweet.context[1].short_code.includes('-')) {
+                            locationRetweet = locationRetweet.context[1].short_code.toUpperCase().split('-')[0]
+                        } else {
+                            locationRetweet = locationRetweet.context[1].short_code.toUpperCase()
+                        }
+                    } else {
+                        return null
+                    }
+                    all.geocode = geocode
+                    all.location = locationRetweet
+                    all.user = retweet.name
+                    list_retweets.push(all)
                 }
-                all.location = locationRetweet
-                if (typeof object.location !== Array) {
-                    object.location = await getAdressGeocode(response, object.location)
-                    object.location = object.location.center
-                }
-                all.user = retweets._realData.includes.users[i].name
-                all.text = l.text
-                all.index = i
-                addLineRetweet(all, i)
-            })
+            }
+            return list_retweets
             
         }
-        async function addLineRetweet(object, i) {
-            console.log('add line', i)
-            console.log('add line i', object, i)
-            if (typeof object.location !== Array) {
-                object.location = await getAdressGeocode(response, object.location)
-                object.location = object.location.center
-                console.log ('in if', object)
+        function addLines(list) {
+            let idCountries = []
+            let nameCountries = []
+            for (let retweet of list) {
+                nameCountries.push(retweet.location)
             }
-            console.log(object, i)
+            idCountries = getIdCountry(nameCountries, allCountries)
+            idCountries.forEach(idCountry => {
+                map.setFeatureState(
+                    { source: 'country', id: idCountry },
+                    { retweets: true }
+                )
+            })
         }
     })
 }
@@ -313,6 +346,10 @@ function quotedOf(tweetId) {
         }
     })
 }
+
+/* 
+timeline [Arthur]
+ */
 
 buttonsPage.addEventListener('click', e => {
     timeLines.forEach(timeLine => {

@@ -25,11 +25,10 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 })
 
-app.listen(3001)
 
 // API Twitter request
 app.post('/searchUserName', (req, res) =>{
-    client.v2.userByUsername(req.query['username'], {"user.fields": ['location', 'public_metrics']})
+    client.v2.userByUsername(req.query['username'], {"user.fields": ['location', 'public_metrics', 'profile_image_url']})
     .then(response => 
         res.send(response)
     )
@@ -44,11 +43,13 @@ app.post('/userTweets', (req, res) => {
 })
 
 app.post('/quotedOf', (req, res) => {
-    client.v2.search(req.query['id'], {"user.fields": ['location', 'public_metrics'], "expansions": ['author_id', 'geo.place_id'], "tweet.fields": ['geo', 'public_metrics'],'place.fields': ['contained_within', 'country', 'geo']})
+    client.v2.tweetRetweetedBy(req.query['id'], {"user.fields": ['location', 'public_metrics']})
     .then(response =>
         res.send(response)
     )
 })
+
+app.listen(3001)
 
 process.on('SIGTERM', () => {
     debug('SIGTERM signal received: closing HTTP server')
