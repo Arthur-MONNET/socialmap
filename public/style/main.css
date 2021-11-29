@@ -5,12 +5,16 @@
 @import './footer.css';
 @import './bg.css';
 
-#error, /* #map, */ #loading, #home, #profile, #register, #login{
-    display: none
-}
-
 html {
     font-size: 62.5%;
+}
+
+#bigBody{
+    background-color: var(--bg-white);
+}
+
+button{
+    cursor: pointer;
 }
 
 body {

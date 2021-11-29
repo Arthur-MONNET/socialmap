@@ -6,6 +6,7 @@ const { response } = require('express');
 var express = require('express');
 var app = express();
 var path = require('path')
+let port = process.env.PORT || 3001
 require('dotenv').config()
 const { TwitterApi } = require('twitter-api-v2');
 
@@ -49,7 +50,7 @@ app.post('/quotedOf', (req, res) => {
     )
 })
 
-app.listen(3001)
+app.listen(port)
 
 process.on('SIGTERM', () => {
     debug('SIGTERM signal received: closing HTTP server')

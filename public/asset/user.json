@@ -1,0 +1,22 @@
+{
+    "users": [
+        {
+            "firstname": "Jean",
+            "lastname": "Dupont",
+            "post":"RH",
+            "email": "artmon2002@gmail.com",
+            "pwd": "a",
+            "company":"Nike",
+            "companyTwitter":"Nike",
+            "activity":"commerce",
+            "location":"New-York",
+            "teamCode":""
+        }
+    ],
+    "teams":[
+        {
+            "teamCode":"12SI3I4M9",
+            "teamName":"Teams Marketing"
+        }
+    ]
+}

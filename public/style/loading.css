@@ -1,0 +1,14 @@
+#bg{
+    height: 100vh;
+}
+
+#loadingContent{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+h2{
+    text-align: center;
+}
