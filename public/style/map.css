@@ -242,6 +242,7 @@ body{
 }
 
 .tweet{
+    cursor: pointer;
     width: calc(100% - 4vh);
     height: 6vh;
     max-height: 55px;
