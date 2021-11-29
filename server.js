@@ -6,6 +6,7 @@ const { response } = require('express');
 var express = require('express');
 var app = express();
 var path = require('path')
+let port = process.env.PORT || 3001
 require('dotenv').config()
 const { TwitterApi } = require('twitter-api-v2');
 
@@ -25,7 +26,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 })
 
-app.listen(3001)
+app.listen(port)
 
 // API Twitter request
 app.post('/searchUserName', (req, res) =>{

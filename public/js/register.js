@@ -91,7 +91,8 @@ let fs5 = `<div>
 </div>
 <div>
     <p>Localisation du siege sociale</p>
-    <input type='text' class="Location" placeholder="Localisation" required />
+    <input type='text' class="Location" placeholder="Localisation" required /
+     
 </div>
 </div>`
 
@@ -129,7 +130,7 @@ let submitText = [{ text: 'Suivant', class: 'blueRightButton', onsubmit: 'transf
 { text: 'Suivant', class: 'blueRightButton', onsubmit: 'transformPage(3);' },
 { text: 'Créer un workspace', class: 'blueCenterButton', onsubmit: '' },
 { text: 'Suivant', class: 'blueRightButton', onsubmit: 'transformPage(5);' },
-{ text: 'Inscription', class: 'yellowRightButton', onsubmit: '' }]
+{ text: 'Inscription', class: 'yellowRightButton', name: 'mappage', onsubmit: '' }]
 function transformPage(i) {
     stage = i
     register.querySelector('.left p').innerHTML=rdmText[Math.floor(Math.random()*rdmText.length)]
@@ -137,6 +138,7 @@ function transformPage(i) {
     stageLine.querySelector('.frontline').style.maxWidth = `calc((600px - 5vh) / 4 * ${i - 1})`
     form.querySelector('section').innerHTML = eval("fs" + i)
     form.querySelector('.submit').value = submitText[i - 1].text
+    form.querySelector('.submit').name = (submitText[i - 1].name)?submitText[i - 1].name:'';
     form.querySelector('.submit').classList.remove("blueRightButton", "blueCenterButton", "yellowRightButton")
     form.querySelector('.submit').classList.remove()
     form.querySelector('.submit').classList.add(submitText[i - 1].class)
@@ -156,7 +158,6 @@ function transformPage(i) {
     } else {
         stageLine.querySelector('.num:nth-child(5)').style.backgroundColor = '#6f719b'
     }
-    console.log(form.querySelector('input'))
     form.querySelector('input').focus()
 }
 
@@ -191,6 +192,7 @@ form.addEventListener("submit", () => {
             }
         };
     } else {
+        console.log(submitText[stage - 1].onsubmit)
         eval(submitText[stage - 1].onsubmit)
     }
 });

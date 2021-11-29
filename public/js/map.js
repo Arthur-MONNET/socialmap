@@ -1,5 +1,6 @@
 import countries from '../asset/world.js'
-const search = document.getElementById('search')
+let searchInput = document.getElementById('search')
+let search = document.querySelector('#searchWrapper>button')
 let timeLines = document.querySelectorAll('.timeLineWrapper')
 let buttonsPage = document.querySelector('#buttonsPage')
 let pagesWrapper = document.querySelector('#scrollWrapper')
@@ -73,7 +74,7 @@ function drawMap(response) {
         container: 'map',
         style: 'mapbox://styles/zak74/ckuzm2lot0yjg14s4e5k4202y',
         center: [5, 45],
-        zoom: 4.5
+        zoom: 1
     })
     let hoveredCountryId = null
     map.on('load', () => {
@@ -135,8 +136,15 @@ function drawMap(response) {
         let allCountries = map.getSource('country')._data.features
 
         search.onclick = () => {
+
+            map.zoomTo(2.5, {
+                center: [
+                    48.8534,
+                    2.3488
+                ], duration: 1000
+            })
             let listCountries = ['FR', 'US', 'BR', 'GB']
-            let idCountries = getIdCountry([search.value], allCountries)
+            let idCountries = getIdCountry([searchInput.value], allCountries)
             idCountries.forEach(idCountry => {
                 map.setFeatureState(
                     { source: 'country', id: idCountry },
@@ -208,7 +216,7 @@ function drawMap(response) {
         }
         addMarkers()
         search.addEventListener('click', (e) => {
-            console.log(search.value)
+            console.log(searchInput.value)
         })
         let retweetsList = []
         function addClickTweets() {
@@ -318,7 +326,7 @@ function quotedOf(tweetId) {
 buttonsPage.addEventListener('click', e => {
     timeLines.forEach(timeLine => {
         let textPoint = timeLine.querySelector('.textPoint')
-        changeTextTimeLine(10,textPoint)
+        changeTextTimeLine(10, textPoint)
         timeLine.querySelector('.pointWrapper').style.left = 'calc(-2.5vw + ((100% - 4.3vh) / 10) * ' + 10 + ')'
     })
     if (e.target.classList.contains("b1")) {
@@ -336,18 +344,19 @@ buttonsPage.addEventListener('click', e => {
 })
 
 
-function changeTextTimeLine(x,text){
-    if(x===10){text.innerHTML='1 jour'}
-    else if(x===9){text.innerHTML='1 semaine'}
-    else if(x===8){text.innerHTML='2 semaines'}
-    else if(x===7){text.innerHTML='3 semaines'}
-    else if(x===6){text.innerHTML='1 mois'}
-    else if(x===5){text.innerHTML='2 mois'}
-    else if(x===4){text.innerHTML='3 mois'}
-    else if(x===3){text.innerHTML='4 mois'}
-    else if(x===2){text.innerHTML='6 mois'}
-    else if(x===1){text.innerHTML='9 mois'}
-    else if(x===0){text.innerHTML='1 ans'}
+function changeTextTimeLine(x, text) {
+    if (x === 10) { text.innerHTML = '1 jour' }
+    else if (x === 9) { text.innerHTML = '1 semaine' }
+    else if (x === 8) { text.innerHTML = '2 semaines' }
+    else if (x === 7) { text.innerHTML = '3 semaines' }
+    else if (x === 6) { text.innerHTML = '1 mois' }
+    else if (x === 5) { text.innerHTML = '2 mois' }
+    else if (x === 4) { text.innerHTML = '3 mois' }
+    else if (x === 3) { text.innerHTML = '4 mois' }
+    else if (x === 2) { text.innerHTML = '6 mois' }
+    else if (x === 1) { text.innerHTML = '9 mois' }
+    else if (x === 0) { text.innerHTML = '1 ans' }
+    else { text.innerHTML = '' }
 }
 
 let x = 0
@@ -359,7 +368,7 @@ timeLines.forEach(timeLine => {
         x = Math.round(((e.clientX - (pages.offsetWidth / 100) * (100 / 3 - 25) / 2) / (timeLine.offsetWidth - window.innerHeight / 100 * 4.3) * 100) / 10)
         if (x > 10) x = 10
         if (x < 0) x = 0
-        changeTextTimeLine(x,textPoint)
+        changeTextTimeLine(x, textPoint)
         timeLine.querySelector('.pointWrapper').style.left = 'calc(-2.5vw + ((100% - 4.3vh) / 10) * ' + x + ')'
     })
     timeLine.addEventListener('mousemove', e => {
@@ -367,7 +376,7 @@ timeLines.forEach(timeLine => {
             x = Math.round(((e.clientX - (pages.offsetWidth / 100) * (100 / 3 - 25) / 2) / (timeLine.offsetWidth - window.innerHeight / 100 * 4.3) * 100) / 10)
             if (x > 10) x = 10
             if (x < 0) x = 0
-            changeTextTimeLine(x,textPoint)
+            changeTextTimeLine(x, textPoint)
             timeLine.querySelector('.pointWrapper').style.left = 'calc(-2.5vw + ((100% - 4.3vh) / 10) * ' + x + ')'
         }
     })
