@@ -211,7 +211,7 @@ body{
     justify-content: space-between;
     padding-top: 3vh;
 }
-.tweets>.content{
+.tweets>#content{
     height :100%;
     width: 100%;
     display: flex;
@@ -347,8 +347,7 @@ body{
     align-items: center;
     justify-content: center;
 }
-#searchWrapper>div>div>p{
-}
+
 #searchWrapper>div>div>svg{
     margin-left: 5px;
     height: 70%;
@@ -400,4 +399,48 @@ body{
     justify-content: center;
     align-items: center;
     background-color: var(--yellow);
+}
+
+
+.tweetsMarker {
+    background-image: url('https://static.cdnlogo.com/logos/t/96/twitter-icon.svg');
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.content{
+    width: 100%;
+}
+
+.tweetI{
+    width: calc(100% - 4vh);
+    height: 6vh;
+    max-height: 55px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 1vh 1.5vh;
+    margin-bottom: 1vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: flex-start;
+}
+.tweetI>div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+}
+.tweetI>div>div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
 }
