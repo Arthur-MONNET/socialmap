@@ -18,8 +18,8 @@ $.ajax({
     }
 })
 
-async function addMarker(nbTweets, token) {
-    const temp = await getUser()
+async function addMarker(nbTweets, token, user) {
+    const temp = await getUser(user)
     const geocodeUser = await getAdressGeocode(token, JSON.parse(temp).data.location)
     const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
     if (temp2._realData.includes.places[nbTweets]) {
@@ -29,11 +29,9 @@ async function addMarker(nbTweets, token) {
     }
 }
 
-async function addPopup(nbTweets) {
-    const temp = await getUser()
+async function addPopup(nbTweets, user) {
+    const temp = await getUser(user)
     const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
-    console.log(JSON.parse(temp).data)
-    console.log(temp2._realData)
     if (temp2._realData.data[nbTweets]) {
         return {
             'HTML': `<em>${temp2._realData.data[nbTweets].text}</em><br>
@@ -68,8 +66,6 @@ async function getAdressGeocode(token, adress) {
         return geocode.features[0]
     }
 }
-
-let retweetsList = []
 
 function drawMap(response) {
     mapboxgl.accessToken = response
@@ -193,11 +189,14 @@ function drawMap(response) {
         })
 
         // add marker for tweets 
-        async function addMarkers() {
-            const nbTweets = JSON.parse(await getUser()).data.public_metrics.tweet_count
+        async function addMarkersMap(user) {
+            let userData = await getUser(user)
+            if (JSON.parse(userData).errors) {
+                return tweetsDiv.insertAdjacentHTML('afterBegin', '<div>Utilisateur non trouvé</div>')
+            }
+            const nbTweets = JSON.parse(userData).data.public_metrics.tweet_count
             for (let tweetInfo = 0; tweetInfo < nbTweets; tweetInfo++) {
-                const popupTextId = await addPopup(tweetInfo)
-                console.log(popupTextId)
+                const popupTextId = await addPopup(tweetInfo, user)
                 if (!popupTextId) {
                     break
                 }
@@ -215,7 +214,7 @@ function drawMap(response) {
                                         <p class="contentTweet descTweet">${popupTextId.element.text}</p>
                                     </div>
                                 </div>`
-                tweetsDiv.insertAdjacentHTML('afterBegin', inTweet)
+                tweetsDiv.insertAdjacentHTML('beforeend', inTweet)
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     popupTextId.HTML
                 )
@@ -223,15 +222,17 @@ function drawMap(response) {
                 el.id = popupTextId.id
                 el.classList.add('tweetsMarker')
                 var marker = new mapboxgl.Marker(el)
-                    .setLngLat(await addMarker(tweetInfo, response))
+                    .setLngLat(await addMarker(tweetInfo, response, user))
                     .setPopup(popup)
                     .addTo(map)
             }
             addClickTweets()
         }
         search.addEventListener('click', (e) =>{
+            console.log(searchInput.value)
             tweetsDiv.innerHTML = ''
-            addMarkers()
+            search.disabled = true
+            addMarkersMap(searchInput.value)
         })
         function addClickTweets() {
             tweetsInsered = document.getElementsByClassName('tweetI')
@@ -256,6 +257,7 @@ function drawMap(response) {
                     addLines(retweet_list)
                 })
             })
+            search.disabled = false
         }
 
         function removeOtherTweets(tweetId) {
@@ -322,9 +324,9 @@ function drawMap(response) {
 Link to API (Twitter/mapbox geocode)
 */
 // get user 
-function getUser() {
+function getUser(user) {
     return $.ajax({
-        url: "/searchUserName?username=GuellaRoxane",
+        url: `/searchUserName?username=${user}`,
         type: "POST",
         dataType: 'text',
         success: function (response, status, http) {
