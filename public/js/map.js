@@ -7,6 +7,8 @@ let pagesWrapper = document.querySelector('#scrollWrapper')
 let pages = pagesWrapper.querySelector('div')
 const tweetsDiv = document.getElementsByClassName('content')[1]
 let tweetsInsered = document.getElementsByClassName('tweet')
+let openSearchFollow = false
+let timeLineText = ['1 ans', '9 mois', '6 mois', '4 mois', '3 mois', '2 mois', '1 mois', '3 semaines', '2 semaines', '1 semaine', '1 jour']
 $.ajax({
     url: "/mapToken",
     type: "POST",
@@ -29,19 +31,19 @@ async function addMarker(nbTweets, token) {
     }
 }
 
-function dateFormat(date){
+function dateFormat(date) {
     let year = date.substring(2, 4)
     let month = date.substring(5, 7)
     let day = date.substring(8, 10)
-    let newDate = day+'/'+month+'/'+year
+    let newDate = day + '/' + month + '/' + year
     return newDate
 }
-function locationFormat(loc){
-    if(loc.indexOf(',')) return loc.substring(0,loc.indexOf(','))
+function locationFormat(loc) {
+    if (loc.indexOf(',')) return loc.substring(0, loc.indexOf(','))
     else return loc
 }
-function descFormat(desc){
-    if(desc.length>30) return desc.substring(0,(desc.indexOf(' ')>0)?desc.substring(0,30).lastIndexOf(' '):30)+"..."
+function descFormat(desc) {
+    if (desc.length > 30) return desc.substring(0, (desc.indexOf(' ') > 0) ? desc.substring(0, 30).lastIndexOf(' ') : 30) + "..."
     else return desc
 }
 
@@ -56,7 +58,7 @@ async function addPopup(nbTweets) {
                 Retweet: ${temp2._realData.data[nbTweets].public_metrics.retweet_count}<br>
                 Like: ${temp2._realData.data[nbTweets].public_metrics.like_count}<br>
                 Reponse: ${temp2._realData.data[nbTweets].public_metrics.reply_count}
-            `, 
+            `,
             'id': temp2._realData.data[nbTweets].id,
             'element': {
                 'photo': JSON.parse(temp).data.profile_image_url,
@@ -68,7 +70,7 @@ async function addPopup(nbTweets) {
             }
         }
     }
-    
+
 }
 
 function getIdCountry(listCountries, allCountries) {
@@ -110,27 +112,6 @@ function drawMap(response) {
             type: 'geojson',
             data: countries
         })
-
-        map.addLayer({
-            'id': 'country-fills',
-            'type': 'fill',
-            'source': 'country',
-            'layout': {},
-            'paint': {
-                'fill-color': [
-                    'case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    '#41CEDE',
-                    'rgba(0,0,0,0)'
-                ],
-                // blue color fill
-                'fill-opacity': 0.5,
-                'fill-color-transition': {
-                    'duration': 5000,
-                    'delay': 0
-                }
-            }
-        })
         map.addLayer({
             'id': 'retweets',
             'type': 'fill',
@@ -155,9 +136,9 @@ function drawMap(response) {
         let allCountries = map.getSource('country')._data.features
 
         search.onclick = () => {
-            document.querySelectorAll('.tweetsMarker').forEach(function(tweetMarker) {
+            document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
-              })
+            })
             allCountries.forEach(idCountry => {
                 map.setFeatureState(
                     { source: 'country', id: idCountry.id },
@@ -176,38 +157,6 @@ function drawMap(response) {
                 'line-width': 0.25
             }
         })
-
-        map.on('mousemove', 'country-fills', (e) => {
-            if (e.features.length > 0) {
-                if (hoveredCountryId !== null) {
-                    map.setFeatureState(
-                        { source: 'country', id: hoveredCountryId },
-                        { hover: false }
-                    )
-                }
-                hoveredCountryId = e.features[0].id;
-                map.setFeatureState(
-                    { source: 'country', id: hoveredCountryId },
-                    { hover: true }
-                )
-            }
-        })
-
-        map.on('mouseleave', 'country-fills', () => {
-            if (hoveredCountryId !== null) {
-                map.setFeatureState(
-                    { source: 'country', id: hoveredCountryId },
-                    { hover: false }
-                )
-            }
-            hoveredCountryId = null;
-            map.getCanvas().style.cursor = '';
-        })
-
-        map.on('mouseenter', 'country', () => {
-            map.getCanvas().style.cursor = 'pointer';
-        })
-
         // add marker for tweets 
         async function addMarkers() {
             const nbTweets = JSON.parse(await getUser()).data.public_metrics.tweet_count
@@ -218,8 +167,8 @@ function drawMap(response) {
                 if (!popupTextId) {
                     break
                 }
-                let inTweet = 
-                                `<div class="tweet" id="${popupTextId.id}">
+                let inTweet =
+                    `<div class="tweet" id="${popupTextId.id}">
                                     <img class="profileTweet" src="${popupTextId.element.photo}"/>
                                     <div>
                                         <div>
@@ -246,7 +195,7 @@ function drawMap(response) {
             }
             addClickTweets()
         }
-        search.addEventListener('click', (e) =>{
+        search.addEventListener('click', (e) => {
             tweetsDiv.innerHTML = ''
             addMarkers()
         })
@@ -254,7 +203,7 @@ function drawMap(response) {
             tweetsInsered = document.getElementsByClassName('tweet')
             const arrayTweetsDiv = Array.prototype.slice.call(tweetsInsered)
             arrayTweetsDiv.forEach(tweetContainer => {
-                tweetContainer.addEventListener('click', async () =>{
+                tweetContainer.addEventListener('click', async () => {
                     /* map.flyTo({center: [0, 0], zoom: 2.5}) */
                     allCountries.forEach(idCountry => {
                         map.setFeatureState(
@@ -264,11 +213,11 @@ function drawMap(response) {
                     })
                     let retweet_list = await addRetweetsLine(tweetContainer.id)
                     removeOtherTweets(tweetContainer.id)
-                    tweetContainer.style.borderColor='var(--blue)'
+                    tweetContainer.style.borderColor = 'var(--blue)'
                     console.log(arrayTweetsDiv)
                     for (let i = 0; i < arrayTweetsDiv.length; i++) {
                         if (arrayTweetsDiv[i].id !== tweetContainer.id) {
-                            arrayTweetsDiv[i].style='border-color:transparent'
+                            arrayTweetsDiv[i].style = 'border-color:transparent'
                         }
                     }
                     addLines(retweet_list)
@@ -278,12 +227,12 @@ function drawMap(response) {
 
         function removeOtherTweets(tweetId) {
             let allTweetsMarker = document.getElementsByClassName('tweetsMarker')
-            let arrayTweetsMarker = Array.prototype.slice.call( allTweetsMarker )
+            let arrayTweetsMarker = Array.prototype.slice.call(allTweetsMarker)
             arrayTweetsMarker.forEach((tweetMarker) => {
                 if (tweetMarker.id !== tweetId) {
-                    tweetMarker.style.display="none"
+                    tweetMarker.style.display = "none"
                 } else {
-                    tweetMarker.style.display="block"
+                    tweetMarker.style.display = "block"
                 }
             })
 
@@ -294,7 +243,7 @@ function drawMap(response) {
             const retweets = await quotedOf(id)
             let locationRetweet = ''
             let geocode = []
-            if (retweets.data){
+            if (retweets.data) {
                 for (let retweet of retweets.data) {
                     let all = {}
                     if (retweet.location) {
@@ -316,7 +265,7 @@ function drawMap(response) {
                 }
             }
             return list_retweets
-            
+
         }
         function addLines(list) {
             let idCountries = []
@@ -418,18 +367,7 @@ buttonsPage.addEventListener('click', e => {
 
 
 function changeTextTimeLine(x, text) {
-    if (x === 10) { text.innerHTML = '1 jour' }
-    else if (x === 9) { text.innerHTML = '1 semaine' }
-    else if (x === 8) { text.innerHTML = '2 semaines' }
-    else if (x === 7) { text.innerHTML = '3 semaines' }
-    else if (x === 6) { text.innerHTML = '1 mois' }
-    else if (x === 5) { text.innerHTML = '2 mois' }
-    else if (x === 4) { text.innerHTML = '3 mois' }
-    else if (x === 3) { text.innerHTML = '4 mois' }
-    else if (x === 2) { text.innerHTML = '6 mois' }
-    else if (x === 1) { text.innerHTML = '9 mois' }
-    else if (x === 0) { text.innerHTML = '1 ans' }
-    else { text.innerHTML = '' }
+    text.innerHTML = timeLineText[x]
 }
 
 let x = 0
@@ -460,3 +398,33 @@ timeLines.forEach(timeLine => {
 document.addEventListener('mouseup', e => {
     click = false
 });
+document.querySelector('.addFollowWrapper').addEventListener('click', () => {
+    console.log(openSearchFollow)
+    if (!openSearchFollow) {
+        console.log(openSearchFollow)
+        document.querySelector('#searchFollow>input').focus()
+        document.querySelector('#placeholderSearchFollow').style.opacity = "0"
+        document.querySelector('#searchFollow').style.display = "flex"
+        setTimeout(() => {
+            document.querySelector('#placeholderSearchFollow').style.width = "0"
+            document.querySelector('#searchFollow').style.width = "100%"
+            document.querySelector('#searchFollow').style.opacity = "1"
+        }, 150);
+        openSearchFollow=true
+    }
+
+})
+document.querySelector('.addFollowWrapper>#searchFollow>svg').addEventListener('click', () => {
+    console.log(openSearchFollow)
+    document.querySelector('#searchFollow').style.opacity = "0"
+    document.querySelector('#searchFollow').style.width = "0"
+    setTimeout(() => {
+        document.querySelector('#placeholderSearchFollow').style.width = "100%"
+        document.querySelector('#placeholderSearchFollow').style.opacity = "0.5"
+    }, 300);
+    setTimeout(() => {
+        document.querySelector('#searchFollow').style.display = "none"
+        openSearchFollow=false
+    }, 500);
+    
+})
