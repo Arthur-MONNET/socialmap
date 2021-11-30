@@ -136,7 +136,7 @@ body{
     .nameTweet,.contentTweet,.textPoint{
         font-size: calc(0.70px * 18.30);
     }
-    .tweets>.numPage>button,#buttonsPage>div>p{
+    .tweets>.numPage>button,#buttonsPage>div>p,#followPage .addFollowWrapper>div>p{
         font-size: calc(0.90px * 18.30);
     }
 }
@@ -244,7 +244,7 @@ body{
 .tweet{
     border: 2px solid transparent;
     cursor: pointer;
-    width: calc(100% - 4vh);
+    width: calc(100% - 3vh);
     height: 6vh;
     max-height: 55px;
     background-color: white;
@@ -378,6 +378,93 @@ body{
     left: calc(425% / 6);
 }
 
+#followPage .input{
+    cursor: pointer;
+    width:100%;
+    background-color: white;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+    height: 5vh;
+    padding: 1vh 1.5vh;
+    width: calc(100% - 3vh);
+    max-height: 45px;
+    margin-bottom: 1vh;
+    align-items:center;
+    justify-content: space-between;
+    flex-direction: row;
+}
+#followPage .addFollowWrapper{
+    justify-content: flex-start;
+}
+#followPage .followWrapper>svg{
+    height: 5vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 3vh;
+    margin-right: -1.5vh;
+    padding-right: 1.5vh;
+}
+
+#followPage .followWrapper>div{
+    display: flex;
+    align-items:center;
+    flex-direction: row;
+}
+
+#followPage .follows{
+    width: 100%;
+    overflow-x:visible;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+#placeholderSearchFollow{
+    transition: opacity 0.1s;
+    display: flex;
+    align-items:stretch;
+    flex-direction: row;
+    opacity: 0.5;
+    color: var(--bg-blue);
+    width: 100%;
+    overflow-x: hidden;
+}
+
+#followPage .addFollowWrapper>div>svg{
+    width: 2vh;
+    padding-right: 1.5vh;
+    padding-left: 1.5vh;
+}
+#placeholderSearchFollow>p{
+    font-size: 0.90vw;
+}
+#searchFollow{
+    transition: opacity 0.1s, width 0.3s ;
+    border-radius: 3vh;
+    border: 2px var(--yellow) solid;
+    opacity: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--gray);
+    display: flex;
+    align-items:center;
+    justify-content: space-between;
+    flex-direction: row;
+}
+#searchFollow>input{
+    margin-left: 2vh;
+    background-color: transparent;
+    height: 100%;
+    width: calc(100% - 5vh);
+    border: none;
+}
+#searchFollow>input::placeholder{
+    color: black;
+}
+#searchFollow>input:focus{
+    outline: none !important;
+}
+
 /*----------------------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------------------*/
@@ -405,44 +492,14 @@ body{
 
 
 .tweetsMarker {
-    background-image: url('https://static.cdnlogo.com/logos/t/96/twitter-icon.svg');
-    background-size: cover;
-    width: 40px;
-    height: 40px;
+    background-color: rgba(70, 89, 255, 0.2);
+    border: solid rgba(70, 89, 255) 2px;
+    width: 4vh;
+    height: 4vh;
     border-radius: 50%;
     cursor: pointer;
 }
 
 .content{
     width: 100%;
-}
-
-.tweetI{
-    width: calc(100% - 4vh);
-    height: 6vh;
-    max-height: 55px;
-    background-color: white;
-    border-radius: 10px;
-    padding: 1vh 1.5vh;
-    margin-bottom: 1vh;
-    display: flex;
-    flex-direction: row;
-    justify-content: stretch;
-    align-items: flex-start;
-}
-.tweetI>div{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: stretch;
-}
-.tweetI>div>div{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
 }
