@@ -7,6 +7,7 @@ let pagesWrapper = document.querySelector('#scrollWrapper')
 let pages = pagesWrapper.querySelector('div')
 const tweetsDivR = document.getElementsByClassName('content')
 let tweetsInsered = document.getElementsByClassName('tweet')
+let currentPage = 0
 const buttonSearch = document.getElementsByClassName('b2')[0]
 //Mytweets
 const buttonMyTweets = document.getElementsByClassName('b1')[0]
@@ -45,8 +46,8 @@ function dateFormat(date) {
     let newDate = day + '/' + month + '/' + year
     return newDate
 }
-function locationFormat(loc){
-    if(loc.indexOf(',') !== -1) return loc.substring(0,loc.indexOf(','))
+function locationFormat(loc) {
+    if (loc.indexOf(',') !== -1) return loc.substring(0, loc.indexOf(','))
     else return loc
 }
 function descFormat(desc) {
@@ -173,7 +174,7 @@ function drawMap(response) {
                 if (!popupTextId) {
                     break
                 }
-                let inTweet =`<div class="tweet" id="${popupTextId.id}">
+                let inTweet = `<div class="tweet" id="${popupTextId.id}">
                                 <img class="profileTweet" src="${allTweets.photo}"/>
                                 <div>
                                      <div>
@@ -186,8 +187,8 @@ function drawMap(response) {
                                     <p class="contentTweet descTweet">${descFormat(popupTextId.text)}</p>
                                 </div>
                             </div>`
-                
-                
+
+
                 tweetsDiv.insertAdjacentHTML('beforeend', inTweet)
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
@@ -217,7 +218,7 @@ function drawMap(response) {
                     })
                     let retweet_list = await addRetweetsLine(tweetContainer.id)
                     removeOtherTweets(tweetContainer.id)
-                    tweetContainer.style.borderColor='var(--blue)'
+                    tweetContainer.style.borderColor = 'var(--blue)'
                     for (let i = 0; i < arrayTweetsDiv.length; i++) {
                         if (arrayTweetsDiv[i].id !== tweetContainer.id) {
                             arrayTweetsDiv[i].style = 'border-color:transparent'
@@ -252,7 +253,7 @@ function drawMap(response) {
                     let all = {}
                     if (retweet.location) {
                         locationRetweet = retweet.location
-                        locationRetweet = await getAdressGeocode(response, retweet.location).then(function (response) {return response}).catch(function (error) {return ' not found'})
+                        locationRetweet = await getAdressGeocode(response, retweet.location).then(function (response) { return response }).catch(function (error) { return ' not found' })
                         if (locationRetweet && typeof locationRetweet !== 'string') {
                             geocode = locationRetweet.center
                             if (!locationRetweet.context) {
@@ -262,10 +263,10 @@ function drawMap(response) {
                                     locationRetweet = locationRetweet.properties.short_code.toUpperCase()
                                 }
                             } else {
-                                if (locationRetweet.context[locationRetweet.context.length-1].short_code.includes('-')) {
-                                    locationRetweet = locationRetweet.context[locationRetweet.context.length-1].short_code.toUpperCase().split('-')[0]
+                                if (locationRetweet.context[locationRetweet.context.length - 1].short_code.includes('-')) {
+                                    locationRetweet = locationRetweet.context[locationRetweet.context.length - 1].short_code.toUpperCase().split('-')[0]
                                 } else {
-                                    locationRetweet = locationRetweet.context[locationRetweet.context.length-1].short_code.toUpperCase()
+                                    locationRetweet = locationRetweet.context[locationRetweet.context.length - 1].short_code.toUpperCase()
                                 }
                             }
                             all.geocode = geocode
@@ -301,7 +302,7 @@ function drawMap(response) {
         })
 
         buttonMyTweets.addEventListener('click', (e) => {
-            document.querySelectorAll('.tweetsMarker').forEach(function(tweetMarker) {
+            document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
             })
             allCountries.forEach(idCountry => {
@@ -317,7 +318,7 @@ function drawMap(response) {
         buttonSearch.addEventListener('click', (e) => {
             searchInput.value = ''
             tweetsDivR[1].innerHTML = ''
-            document.querySelectorAll('.tweetsMarker').forEach(function(tweetMarker) {
+            document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
             })
             allCountries.forEach(idCountry => {
@@ -459,7 +460,7 @@ document.querySelector('.addFollowWrapper').addEventListener('click', () => {
             document.querySelector('#searchFollow').style.width = "100%"
             document.querySelector('#searchFollow').style.opacity = "1"
         }, 150);
-        openSearchFollow=true
+        openSearchFollow = true
     }
 
 })
@@ -473,7 +474,35 @@ document.querySelector('.addFollowWrapper>#searchFollow>svg').addEventListener('
     }, 300);
     setTimeout(() => {
         document.querySelector('#searchFollow').style.display = "none"
-        openSearchFollow=false
+        openSearchFollow = false
     }, 500);
-    
+
+})
+
+document.querySelectorAll(".numPage").forEach(numPage => {
+    numPage.addEventListener('click', e => {
+        if (e.target.classList.contains('pageLeft')) {
+            if (currentPage > 0) {
+                currentPage--
+                //changePage()
+            } else {
+                currentPage = 0
+            }
+        } else if (e.target.classList.contains('page1')) {
+            console.log(e.target.value)
+            currentPage = e.target.value
+        } else if (e.target.classList.contains('page2')) {
+            currentPage = e.target.value
+        } else if (e.target.classList.contains('page3')) {
+            currentPage = e.target.value
+        } else if (e.target.classList.contains('pageRight')) {
+            if (currentPage <= 3) {
+                currentPage++
+                //changePage()
+            } else {
+                currentPage = 3
+            }
+        }
+
+    })
 })

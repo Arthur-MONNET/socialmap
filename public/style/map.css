@@ -236,6 +236,10 @@ body{
 .tweets>.numPage>button:hover{
     opacity: 1;
 }
+.tweets .select{
+    opacity: 1;
+}
+
 .tweets>.numPage>.pageLeft,.tweets>.numPage>.pageRight{
     width: 1.20vw;
     opacity: 1;
