@@ -32,13 +32,39 @@ $.ajax({
 async function addMarker(token, user) {
     const geocodeUser = await getAdressGeocode(token, user.data.location)
     const temp2 = await getTweetsUser(user.data.id)
-    console.log(temp2)
     return {
         "tweets": temp2._realData,
         "userLocation": geocodeUser,
         "photo": user.data.profile_image_url,
         "name": user.data.name,
         "username": user.data.username
+    }
+}
+
+async function addMarkerHashtag(token, hashtag) {
+    const allTweets = await getHashtag(hashtag)
+    console.log(allTweets._realData)
+    let allUser = {
+        'location': [],
+        'name':[],
+        'photo': [],
+        'username': []
+    }
+    if (!allTweets._realData.data) {
+        return {}
+    }
+    for (let user in allTweets._realData.includes.users) {
+        allUser.location.push(await getAdressGeocode(token, allTweets._realData.includes.users[user].location).then(function (response) { return response }).catch(function (error) {return ' not found' }))
+        allUser.name.push(allTweets._realData.includes.users[user].name)
+        allUser.photo.push(allTweets._realData.includes.users[user].profile_image_url)
+        allUser.username.push(allTweets._realData.includes.users[user].username)
+    }
+    return {
+        "tweets": allTweets._realData.data,
+        "userLocation": allUser.location,
+        "photo": allUser.photo,
+        "name": allUser.name,
+        "username": allUser.username
     }
 }
 
@@ -142,7 +168,6 @@ function drawMap(response) {
         })
         // add marker for tweets 
         async function addMarkersMap(user, scope) {
-            let tweetsDiv = ''
             let userData = await getUser(user)
             if (JSON.parse(userData).errors && scope === 'search') {
                 search.disabled = false
@@ -153,10 +178,7 @@ function drawMap(response) {
             }
             const allTweets = await addMarker(response, JSON.parse(userData))
 
-            if (scope === 'search') {
-                tweetsDiv = tweetsDivR[1]
-            } else if (scope === 'myTweets') {
-                tweetsDiv = tweetsDivR[0]
+            if (scope === 'myTweets') {
                 tweetDivMe.innerHTML = `
                 <img class="profileTweet" src="${allTweets.photo}"/>
                 <div>
@@ -193,7 +215,6 @@ function drawMap(response) {
                             </div>`
 
                 list_all_tweets.push(inTweet)
-                /* tweetsDiv.insertAdjacentHTML('beforeend', inTweet) */
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
                 )
@@ -211,6 +232,57 @@ function drawMap(response) {
                 div = 1
             }
             renderingTweets(list_all_tweets, currentPage, div)
+        }
+
+        async function addMarkersMapHashtag(hashtag) {
+            const allTweets = await addMarkerHashtag(response, hashtag)
+            search.disabled = false
+            if (!allTweets.tweets){
+                return tweetsDivR[1].insertAdjacentHTML('afterBegin', '<div>Hashtag non trouvé</div>')
+            }
+            for (let tweetInfo = 0; tweetInfo < allTweets.tweets.length; tweetInfo++) {
+                const popupTextId = allTweets.tweets[tweetInfo]
+                let location = {
+                    'name': 'Undefined on Ground',
+                    'geo': [-1.876659, 54.215705]
+                }
+                if (allTweets.userLocation[tweetInfo] && allTweets.userLocation[tweetInfo] !== 'not found') {
+                    location.geo = allTweets.userLocation[tweetInfo].geometry.coordinates
+                    location.name = allTweets.userLocation[tweetInfo].place_name
+                }
+                
+                if (!popupTextId) {
+                    break
+                }
+
+                let inTweet = `<div class="tweet" id="${popupTextId.id}">
+                                <img class="profileTweet" src="${allTweets.photo[tweetInfo]}"/>
+                                <div>
+                                     <div>
+                                        <div>
+                                            <p class="contentTweet nameTweet">${allTweets.name[tweetInfo]}</p>
+                                            <p class="contentTweet atTweet">@${allTweets.username[tweetInfo]}</p>
+                                        </div>
+                                        <p class="contentTweet date&Loc">${dateFormat(popupTextId.created_at)} - ${locationFormat(location.name)} </p>
+                                    </div>
+                                    <p class="contentTweet descTweet">${descFormat(popupTextId.text)}</p>
+                                </div>
+                            </div>`
+
+                list_all_tweets.push(inTweet)
+                const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+                    inTweet
+                )
+                const el = document.createElement('div')
+                el.id = popupTextId.id
+                el.classList.add('tweetsMarker')
+
+                var marker = new mapboxgl.Marker(el)
+                    .setLngLat(location.geo)
+                    .setPopup(popup)
+                    .addTo(map)
+            }
+            renderingTweets(list_all_tweets, currentPage, 1)
         }
 
         function renderingTweets(listAllTweets, pageIn, div) {
@@ -322,7 +394,12 @@ function drawMap(response) {
             tweetsDivR[1].innerHTML = ''
             search.disabled = true
             divNum = 1
-            addMarkersMap(searchInput.value, 'search')
+            if (searchInput.value.includes('@')){
+                addMarkersMap(searchInput.value.replace('@',''), 'search')
+            } else if ( searchInput.value.includes('#')) {
+                addMarkersMapHashtag(searchInput.value.replace('#','%23'))
+            }
+            
         })
 
         buttonMyTweets.addEventListener('click', (e) => {
@@ -395,6 +472,19 @@ function drawMap(response) {
 /*
 Link to API (Twitter/mapbox geocode)
 */
+
+function getHashtag(hashtag) {
+    return $.ajax({
+        url:`/searchHashtag?hashtag=${hashtag}`,
+        type: "POST",
+        success: function (response, status, http) {
+            if (response) {
+                return response
+            }
+        }
+    })
+}
+
 // get user 
 function getUser(user) {
     return $.ajax({

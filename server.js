@@ -28,6 +28,14 @@ app.get('/', (req, res) => {
 
 
 // API Twitter request
+app.post('/searchHashtag', (req, res) => {
+    client.v2.search(req.query['hashtag'], {"max_results": 40, "expansions": ['geo.place_id', 'author_id'], "tweet.fields": ['public_metrics', 'created_at', 'text'],"user.fields": ['name', 'username', 'location','profile_image_url']})
+    .then(response => 
+        res.send(response)
+    )
+    .catch(error => console.error(error))
+})
+
 app.post('/searchUserName', (req, res) =>{
     client.v2.userByUsername(req.query['username'], {"user.fields": ['location', 'public_metrics', 'profile_image_url']})
     .then(response => 
