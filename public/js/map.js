@@ -7,11 +7,14 @@ let pagesWrapper = document.querySelector('#scrollWrapper')
 let pages = pagesWrapper.querySelector('div')
 const tweetsDivR = document.getElementsByClassName('content')
 let tweetsInsered = document.getElementsByClassName('tweet')
-let currentPage = 0
+let currentPage = 1
 const buttonSearch = document.getElementsByClassName('b2')[0]
 //Mytweets
 const buttonMyTweets = document.getElementsByClassName('b1')[0]
 const tweetDivMe = document.getElementById('titleMyTweets')
+
+let list_all_tweets = []
+let divNum = 0
 
 let openSearchFollow = false
 let timeLineText = ['1 ans', '9 mois', '6 mois', '4 mois', '3 mois', '2 mois', '1 mois', '3 semaines', '2 semaines', '1 semaine', '1 jour']
@@ -174,6 +177,7 @@ function drawMap(response) {
                 if (!popupTextId) {
                     break
                 }
+
                 let inTweet = `<div class="tweet" id="${popupTextId.id}">
                                 <img class="profileTweet" src="${allTweets.photo}"/>
                                 <div>
@@ -188,8 +192,8 @@ function drawMap(response) {
                                 </div>
                             </div>`
 
-
-                tweetsDiv.insertAdjacentHTML('beforeend', inTweet)
+                list_all_tweets.push(inTweet)
+                /* tweetsDiv.insertAdjacentHTML('beforeend', inTweet) */
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
                 )
@@ -202,8 +206,26 @@ function drawMap(response) {
                     .setPopup(popup)
                     .addTo(map)
             }
+            let div = 0
+            if (scope === 'search') {
+                div = 1
+            }
+            renderingTweets(list_all_tweets, currentPage, div)
+        }
+
+        function renderingTweets(listAllTweets, pageIn, div) {
+            tweetsDivR[div].innerHTML = ''
+            for (let i = (pageIn-1)*4 ; i<((pageIn-1)*4)+4; i++) {
+                if (listAllTweets[i]) {
+                    tweetsDivR[div].insertAdjacentHTML('beforeend', listAllTweets[i])
+                } else {
+                    addClickTweets()
+                    return
+                }
+            }
             addClickTweets()
         }
+
         function addClickTweets() {
             tweetsInsered = document.getElementsByClassName('tweet')
             const arrayTweetsDiv = Array.prototype.slice.call(tweetsInsered)
@@ -253,7 +275,7 @@ function drawMap(response) {
                     let all = {}
                     if (retweet.location) {
                         locationRetweet = retweet.location
-                        locationRetweet = await getAdressGeocode(response, retweet.location).then(function (response) { return response }).catch(function (error) { return ' not found' })
+                        locationRetweet = await getAdressGeocode(response, retweet.location).then(function (response) { return response }).catch(function (error) {return ' not found' })
                         if (locationRetweet && typeof locationRetweet !== 'string') {
                             geocode = locationRetweet.center
                             if (!locationRetweet.context) {
@@ -296,12 +318,16 @@ function drawMap(response) {
         }
 
         search.addEventListener('click', (e) => {
+            list_all_tweets = []
             tweetsDivR[1].innerHTML = ''
             search.disabled = true
+            divNum = 1
             addMarkersMap(searchInput.value, 'search')
         })
 
         buttonMyTweets.addEventListener('click', (e) => {
+            list_all_tweets = []
+            divNum = 0
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
             })
@@ -316,6 +342,7 @@ function drawMap(response) {
         })
 
         buttonSearch.addEventListener('click', (e) => {
+            list_all_tweets = []
             searchInput.value = ''
             tweetsDivR[1].innerHTML = ''
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
@@ -326,6 +353,36 @@ function drawMap(response) {
                     { source: 'country', id: idCountry.id },
                     { retweets: false }
                 )
+            })
+        })
+
+        document.querySelectorAll(".numPage").forEach(numPage => {
+            numPage.addEventListener('click', e => {
+                if (e.target.classList.contains('pageLeft')) {
+                    if (currentPage > 1) {
+                        currentPage--
+                        renderingTweets(list_all_tweets, currentPage, divNum)
+                    } else {
+                        currentPage = 1
+                    }
+                } else if (e.target.classList.contains('page1')) {
+                    currentPage = e.target.innerHTML
+                    renderingTweets(list_all_tweets, currentPage, divNum)
+                } else if (e.target.classList.contains('page2')) {
+                    currentPage = e.target.innerHTML
+                    renderingTweets(list_all_tweets, currentPage, divNum)
+                } else if (e.target.classList.contains('page3')) {
+                    currentPage = e.target.innerHTML
+                    renderingTweets(list_all_tweets, currentPage, divNum)
+                } else if (e.target.classList.contains('pageRight')) {
+                    if (currentPage <= 3) {
+                        currentPage++
+                        renderingTweets(list_all_tweets, currentPage, divNum)
+                    } else {
+                        currentPage = 3
+                    }
+                }
+        
             })
         })
 
@@ -471,38 +528,10 @@ document.querySelector('.addFollowWrapper>#searchFollow>svg').addEventListener('
     setTimeout(() => {
         document.querySelector('#placeholderSearchFollow').style.width = "100%"
         document.querySelector('#placeholderSearchFollow').style.opacity = "0.5"
-    }, 300);
+    }, 300)
     setTimeout(() => {
         document.querySelector('#searchFollow').style.display = "none"
         openSearchFollow = false
-    }, 500);
-
+    }, 500)
 })
 
-document.querySelectorAll(".numPage").forEach(numPage => {
-    numPage.addEventListener('click', e => {
-        if (e.target.classList.contains('pageLeft')) {
-            if (currentPage > 0) {
-                currentPage--
-                //changePage()
-            } else {
-                currentPage = 0
-            }
-        } else if (e.target.classList.contains('page1')) {
-            console.log(e.target.value)
-            currentPage = e.target.value
-        } else if (e.target.classList.contains('page2')) {
-            currentPage = e.target.value
-        } else if (e.target.classList.contains('page3')) {
-            currentPage = e.target.value
-        } else if (e.target.classList.contains('pageRight')) {
-            if (currentPage <= 3) {
-                currentPage++
-                //changePage()
-            } else {
-                currentPage = 3
-            }
-        }
-
-    })
-})
