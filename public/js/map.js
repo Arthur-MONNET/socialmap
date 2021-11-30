@@ -5,8 +5,13 @@ let timeLines = document.querySelectorAll('.timeLineWrapper')
 let buttonsPage = document.querySelector('#buttonsPage')
 let pagesWrapper = document.querySelector('#scrollWrapper')
 let pages = pagesWrapper.querySelector('div')
-const tweetsDiv = document.getElementsByClassName('content')[1]
+const tweetsDivR = document.getElementsByClassName('content')
 let tweetsInsered = document.getElementsByClassName('tweet')
+const buttonSearch = document.getElementsByClassName('b2')[0]
+//Mytweets
+const buttonMyTweets = document.getElementsByClassName('b1')[0]
+const tweetDivMe = document.getElementById('titleMyTweets')
+
 let openSearchFollow = false
 let timeLineText = ['1 ans', '9 mois', '6 mois', '4 mois', '3 mois', '2 mois', '1 mois', '3 semaines', '2 semaines', '1 semaine', '1 jour']
 $.ajax({
@@ -20,14 +25,16 @@ $.ajax({
     }
 })
 
-async function addMarker(nbTweets, token) {
-    const temp = await getUser()
-    const geocodeUser = await getAdressGeocode(token, JSON.parse(temp).data.location)
-    const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
-    if (temp2._realData.includes.places[nbTweets]) {
-        return [temp2._realData.includes.places[nbTweets].geo.bbox[0], temp2._realData.includes.places[nbTweets].geo.bbox[1]]
-    } else {
-        return geocodeUser.geometry.coordinates
+async function addMarker(token, user) {
+    const geocodeUser = await getAdressGeocode(token, user.data.location)
+    const temp2 = await getTweetsUser(user.data.id)
+    console.log(temp2)
+    return {
+        "tweets": temp2._realData,
+        "userLocation": geocodeUser,
+        "photo": user.data.profile_image_url,
+        "name": user.data.name,
+        "username": user.data.username
     }
 }
 
@@ -38,39 +45,13 @@ function dateFormat(date) {
     let newDate = day + '/' + month + '/' + year
     return newDate
 }
-function locationFormat(loc) {
-    if (loc.indexOf(',')) return loc.substring(0, loc.indexOf(','))
+function locationFormat(loc){
+    if(loc.indexOf(',') !== -1) return loc.substring(0,loc.indexOf(','))
     else return loc
 }
 function descFormat(desc) {
     if (desc.length > 30) return desc.substring(0, (desc.indexOf(' ') > 0) ? desc.substring(0, 30).lastIndexOf(' ') : 30) + "..."
     else return desc
-}
-
-async function addPopup(nbTweets) {
-    const temp = await getUser()
-    const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
-    console.log(JSON.parse(temp).data)
-    console.log(temp2._realData)
-    if (temp2._realData.data[nbTweets]) {
-        return {
-            'HTML': `<em>${temp2._realData.data[nbTweets].text}</em><br>
-                Retweet: ${temp2._realData.data[nbTweets].public_metrics.retweet_count}<br>
-                Like: ${temp2._realData.data[nbTweets].public_metrics.like_count}<br>
-                Reponse: ${temp2._realData.data[nbTweets].public_metrics.reply_count}
-            `,
-            'id': temp2._realData.data[nbTweets].id,
-            'element': {
-                'photo': JSON.parse(temp).data.profile_image_url,
-                'name': JSON.parse(temp).data.name,
-                'username': JSON.parse(temp).data.username,
-                'date': dateFormat(temp2._realData.data[nbTweets].created_at),
-                'text': descFormat(temp2._realData.data[nbTweets].text),
-                'location': locationFormat(JSON.parse(temp).data.location)
-            }
-        }
-    }
-
 }
 
 function getIdCountry(listCountries, allCountries) {
@@ -86,8 +67,6 @@ async function getAdressGeocode(token, adress) {
         return geocode.features[0]
     }
 }
-
-let retweetsList = []
 
 function drawMap(response) {
     mapboxgl.accessToken = response
@@ -158,47 +137,72 @@ function drawMap(response) {
             }
         })
         // add marker for tweets 
-        async function addMarkers() {
-            const nbTweets = JSON.parse(await getUser()).data.public_metrics.tweet_count
-            for (let tweetInfo = 0; tweetInfo < nbTweets; tweetInfo++) {
-                console.log(tweetInfo)
-                const popupTextId = await addPopup(tweetInfo)
-                console.log(popupTextId)
+        async function addMarkersMap(user, scope) {
+            let tweetsDiv = ''
+            let userData = await getUser(user)
+            if (JSON.parse(userData).errors && scope === 'search') {
+                search.disabled = false
+                return tweetsDivR[1].insertAdjacentHTML('afterBegin', '<div>Utilisateur non trouvé</div>')
+            } else if (JSON.parse(userData).errors && scope === 'myTweets') {
+                search.disabled = false
+                return tweetsDivR[0].insertAdjacentHTML('afterBegin', '<div>Utilisateur non trouvé</div>')
+            }
+            const allTweets = await addMarker(response, JSON.parse(userData))
+
+            if (scope === 'search') {
+                tweetsDiv = tweetsDivR[1]
+            } else if (scope === 'myTweets') {
+                tweetsDiv = tweetsDivR[0]
+                tweetDivMe.innerHTML = `
+                <img class="profileTweet" src="${allTweets.photo}"/>
+                <div>
+                    <p class="contentTweet nameTweet">${allTweets.name}</p>
+                    <p class="contentTweet atTweet">@${allTweets.username}</p>
+                </div>`
+            }
+            for (let tweetInfo = 0; tweetInfo < allTweets.tweets.data.length; tweetInfo++) {
+                const popupTextId = allTweets.tweets.data[tweetInfo]
+                let location = {}
+                if (allTweets.tweets.includes && allTweets.tweets.includes.places[tweetInfo]) {
+                    location.geo = [allTweets.tweets.includes.places[tweetInfo].geo.bbox[0], allTweets.tweets.includes.places[tweetInfo].geo.bbox[1]]
+                    location.name = allTweets.tweets.includes.places[tweetInfo].full_name
+                } else {
+                    location.geo = allTweets.userLocation.geometry.coordinates
+                    location.name = allTweets.userLocation.place_name
+                }
                 if (!popupTextId) {
                     break
                 }
-                let inTweet =
-                    `<div class="tweet" id="${popupTextId.id}">
-                                    <img class="profileTweet" src="${popupTextId.element.photo}"/>
-                                    <div>
+                let inTweet =`<div class="tweet" id="${popupTextId.id}">
+                                <img class="profileTweet" src="${allTweets.photo}"/>
+                                <div>
+                                     <div>
                                         <div>
-                                            <div>
-                                                <p class="contentTweet nameTweet">${popupTextId.element.name}</p>
-                                                <p class="contentTweet atTweet">@${popupTextId.element.username}</p>
-                                            </div>
-                                            <p class="contentTweet date&Loc">${popupTextId.element.date} - ${popupTextId.element.location} </p>
+                                            <p class="contentTweet nameTweet">${allTweets.name}</p>
+                                            <p class="contentTweet atTweet">@${allTweets.username}</p>
                                         </div>
-                                        <p class="contentTweet descTweet">${popupTextId.element.text}</p>
+                                        <p class="contentTweet date&Loc">${dateFormat(popupTextId.created_at)} - ${locationFormat(location.name)} </p>
                                     </div>
-                                </div>`
-                tweetsDiv.insertAdjacentHTML('afterBegin', inTweet)
+                                    <p class="contentTweet descTweet">${descFormat(popupTextId.text)}</p>
+                                </div>
+                            </div>`
+                
+                
+                tweetsDiv.insertAdjacentHTML('beforeend', inTweet)
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-                    popupTextId.HTML
+                    inTweet
                 )
                 const el = document.createElement('div')
                 el.id = popupTextId.id
                 el.classList.add('tweetsMarker')
+
                 var marker = new mapboxgl.Marker(el)
-                    .setLngLat(await addMarker(tweetInfo, response))
+                    .setLngLat(location.geo)
                     .setPopup(popup)
                     .addTo(map)
             }
             addClickTweets()
         }
-        search.addEventListener('click', (e) => {
-            tweetsDiv.innerHTML = ''
-            addMarkers()
-        })
         function addClickTweets() {
             tweetsInsered = document.getElementsByClassName('tweet')
             const arrayTweetsDiv = Array.prototype.slice.call(tweetsInsered)
@@ -213,8 +217,7 @@ function drawMap(response) {
                     })
                     let retweet_list = await addRetweetsLine(tweetContainer.id)
                     removeOtherTweets(tweetContainer.id)
-                    tweetContainer.style.borderColor = 'var(--blue)'
-                    console.log(arrayTweetsDiv)
+                    tweetContainer.style.borderColor='var(--blue)'
                     for (let i = 0; i < arrayTweetsDiv.length; i++) {
                         if (arrayTweetsDiv[i].id !== tweetContainer.id) {
                             arrayTweetsDiv[i].style = 'border-color:transparent'
@@ -223,6 +226,7 @@ function drawMap(response) {
                     addLines(retweet_list)
                 })
             })
+            search.disabled = false
         }
 
         function removeOtherTweets(tweetId) {
@@ -248,20 +252,28 @@ function drawMap(response) {
                     let all = {}
                     if (retweet.location) {
                         locationRetweet = retweet.location
-                        locationRetweet = await getAdressGeocode(response, retweet.location)
-                        geocode = locationRetweet.center
-                        if (locationRetweet.context[1].short_code.includes('-')) {
-                            locationRetweet = locationRetweet.context[1].short_code.toUpperCase().split('-')[0]
-                        } else {
-                            locationRetweet = locationRetweet.context[1].short_code.toUpperCase()
+                        locationRetweet = await getAdressGeocode(response, retweet.location).then(function (response) {return response}).catch(function (error) {return ' not found'})
+                        if (locationRetweet && typeof locationRetweet !== 'string') {
+                            geocode = locationRetweet.center
+                            if (!locationRetweet.context) {
+                                if (locationRetweet.properties.short_code.includes('-')) {
+                                    locationRetweet = locationRetweet.properties.short_code.toUpperCase().split('-')[0]
+                                } else {
+                                    locationRetweet = locationRetweet.properties.short_code.toUpperCase()
+                                }
+                            } else {
+                                if (locationRetweet.context[locationRetweet.context.length-1].short_code.includes('-')) {
+                                    locationRetweet = locationRetweet.context[locationRetweet.context.length-1].short_code.toUpperCase().split('-')[0]
+                                } else {
+                                    locationRetweet = locationRetweet.context[locationRetweet.context.length-1].short_code.toUpperCase()
+                                }
+                            }
+                            all.geocode = geocode
+                            all.location = locationRetweet
+                            all.user = retweet.name
+                            list_retweets.push(all)
                         }
-                    } else {
-                        return null
                     }
-                    all.geocode = geocode
-                    all.location = locationRetweet
-                    all.user = retweet.name
-                    list_retweets.push(all)
                 }
             }
             return list_retweets
@@ -281,6 +293,43 @@ function drawMap(response) {
                 )
             })
         }
+
+        search.addEventListener('click', (e) => {
+            tweetsDivR[1].innerHTML = ''
+            search.disabled = true
+            addMarkersMap(searchInput.value, 'search')
+        })
+
+        buttonMyTweets.addEventListener('click', (e) => {
+            document.querySelectorAll('.tweetsMarker').forEach(function(tweetMarker) {
+                tweetMarker.remove()
+            })
+            allCountries.forEach(idCountry => {
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { retweets: false }
+                )
+            })
+            tweetsDivR[0].innerHTML = ''
+            addMarkersMap(sessionStorage.usercompanyTwitter, 'myTweets')
+        })
+
+        buttonSearch.addEventListener('click', (e) => {
+            searchInput.value = ''
+            tweetsDivR[1].innerHTML = ''
+            document.querySelectorAll('.tweetsMarker').forEach(function(tweetMarker) {
+                tweetMarker.remove()
+            })
+            allCountries.forEach(idCountry => {
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { retweets: false }
+                )
+            })
+        })
+
+        tweetsDivR[0].innerHTML = ''
+        addMarkersMap(sessionStorage.usercompanyTwitter, 'myTweets')
     })
 }
 
@@ -289,9 +338,9 @@ function drawMap(response) {
 Link to API (Twitter/mapbox geocode)
 */
 // get user 
-function getUser() {
+function getUser(user) {
     return $.ajax({
-        url: "/searchUserName?username=GuellaRoxane",
+        url: `/searchUserName?username=${user}`,
         type: "POST",
         dataType: 'text',
         success: function (response, status, http) {
