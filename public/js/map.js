@@ -212,6 +212,7 @@ function drawMap(response) {
         async function addMarkers() {
             const nbTweets = JSON.parse(await getUser()).data.public_metrics.tweet_count
             for (let tweetInfo = 0; tweetInfo < nbTweets; tweetInfo++) {
+                console.log(tweetInfo)
                 const popupTextId = await addPopup(tweetInfo)
                 console.log(popupTextId)
                 if (!popupTextId) {
@@ -263,10 +264,11 @@ function drawMap(response) {
                     })
                     let retweet_list = await addRetweetsLine(tweetContainer.id)
                     removeOtherTweets(tweetContainer.id)
-                    tweetContainer.style.backgroundColor = '#1DA9B9'
+                    tweetContainer.style.borderColor='var(--blue)'
+                    console.log(arrayTweetsDiv)
                     for (let i = 0; i < arrayTweetsDiv.length; i++) {
                         if (arrayTweetsDiv[i].id !== tweetContainer.id) {
-                            arrayTweetsDiv[i].style.backgroundColor = 'tomato'
+                            arrayTweetsDiv[i].style='border-color:transparent'
                         }
                     }
                     addLines(retweet_list)
