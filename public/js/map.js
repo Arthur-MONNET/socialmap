@@ -6,7 +6,7 @@ let buttonsPage = document.querySelector('#buttonsPage')
 let pagesWrapper = document.querySelector('#scrollWrapper')
 let pages = pagesWrapper.querySelector('div')
 const tweetsDiv = document.getElementsByClassName('content')[1]
-let tweetsInsered = document.getElementsByClassName('tweetI')
+let tweetsInsered = document.getElementsByClassName('tweet')
 $.ajax({
     url: "/mapToken",
     type: "POST",
@@ -29,6 +29,22 @@ async function addMarker(nbTweets, token, user) {
     }
 }
 
+function dateFormat(date){
+    let year = date.substring(2, 4)
+    let month = date.substring(5, 7)
+    let day = date.substring(8, 10)
+    let newDate = day+'/'+month+'/'+year
+    return newDate
+}
+function locationFormat(loc){
+    if(loc.indexOf(',')) return loc.substring(0,loc.indexOf(','))
+    else return loc
+}
+function descFormat(desc){
+    if(desc.length>30) return desc.substring(0,(desc.indexOf(' ')>0)?desc.substring(0,30).lastIndexOf(' '):30)+"..."
+    else return desc
+}
+
 async function addPopup(nbTweets, user) {
     const temp = await getUser(user)
     const temp2 = await getTweetsUser(JSON.parse(temp).data.id)
@@ -44,9 +60,9 @@ async function addPopup(nbTweets, user) {
                 'photo': JSON.parse(temp).data.profile_image_url,
                 'name': JSON.parse(temp).data.name,
                 'username': JSON.parse(temp).data.username,
-                'date': temp2._realData.data[nbTweets].created_at,
-                'text': temp2._realData.data[nbTweets].text,
-                'location': JSON.parse(temp).data.location
+                'date': dateFormat(temp2._realData.data[nbTweets].created_at),
+                'text': descFormat(temp2._realData.data[nbTweets].text),
+                'location': locationFormat(JSON.parse(temp).data.location)
             }
         }
     }
@@ -201,7 +217,7 @@ function drawMap(response) {
                     break
                 }
                 let inTweet = 
-                                `<div class="tweetI" id="${popupTextId.id}">
+                                `<div class="tweet" id="${popupTextId.id}">
                                     <img class="profileTweet" src="${popupTextId.element.photo}"/>
                                     <div>
                                         <div>
@@ -235,7 +251,7 @@ function drawMap(response) {
             addMarkersMap(searchInput.value)
         })
         function addClickTweets() {
-            tweetsInsered = document.getElementsByClassName('tweetI')
+            tweetsInsered = document.getElementsByClassName('tweet')
             const arrayTweetsDiv = Array.prototype.slice.call(tweetsInsered)
             arrayTweetsDiv.forEach(tweetContainer => {
                 tweetContainer.addEventListener('click', async () =>{
@@ -248,10 +264,11 @@ function drawMap(response) {
                     })
                     let retweet_list = await addRetweetsLine(tweetContainer.id)
                     removeOtherTweets(tweetContainer.id)
-                    tweetContainer.style.backgroundColor = '#1DA9B9'
+                    tweetContainer.style.borderColor='var(--blue)'
+                    console.log(arrayTweetsDiv)
                     for (let i = 0; i < arrayTweetsDiv.length; i++) {
                         if (arrayTweetsDiv[i].id !== tweetContainer.id) {
-                            arrayTweetsDiv[i].style.backgroundColor = 'tomato'
+                            arrayTweetsDiv[i].style='border-color:transparent'
                         }
                     }
                     addLines(retweet_list)
