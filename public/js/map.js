@@ -15,6 +15,20 @@ const tweetDivMe = document.getElementById('titleMyTweets')
 
 let list_all_tweets = []
 let divNum = 0
+let retweetNb = 0
+let gradient = 0
+
+let test =  [
+    'step',
+    ['feature-state', 'gradient'],
+    0
+]
+
+for (let i = 0; i<91; i++) {
+    test.push(i)
+    test.push((i+10)/100)
+}
+console.log(test)
 
 let openSearchFollow = false
 let timeLineText = ['1 ans', '9 mois', '6 mois', '4 mois', '3 mois', '2 mois', '1 mois', '3 semaines', '2 semaines', '1 semaine', '1 jour']
@@ -43,7 +57,6 @@ async function addMarker(token, user) {
 
 async function addMarkerHashtag(token, hashtag) {
     const allTweets = await getHashtag(hashtag)
-    console.log(allTweets._realData)
     let allUser = {
         'location': [],
         'name':[],
@@ -131,18 +144,25 @@ function drawMap(response) {
                     'case',
                     ['boolean', ['feature-state', 'retweets'], false],
                     '#DEFD6D',
-                    'rgba(0,0,0,0)'
+                    'transparent'
                 ],
                 // blue color fill
-                'fill-opacity': 0.5,
-                'fill-color-transition': {
-                    'duration': 5000,
-                    'delay': 0
-                }
+                'fill-opacity': 0.5
             }
         })
 
         let allCountries = map.getSource('country')._data.features
+
+        allCountries.forEach(idCountry => {
+            map.setFeatureState(
+                { source: 'country', id: idCountry.id },
+                { retweets: false }
+            )
+            map.setFeatureState(
+                { source: 'country', id: idCountry.id },
+                { gradient: 0 }
+            )
+        })
 
         search.onclick = () => {
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
@@ -152,6 +172,10 @@ function drawMap(response) {
                 map.setFeatureState(
                     { source: 'country', id: idCountry.id },
                     { retweets: false }
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { gradient: 0 }
                 )
             })
         }
@@ -309,6 +333,10 @@ function drawMap(response) {
                             { source: 'country', id: idCountry.id },
                             { retweets: false }
                         )
+                        map.setFeatureState(
+                            { source: 'country', id: idCountry.id },
+                            { gradient: 0 }
+                        )
                     })
                     let retweet_list = await addRetweetsLine(tweetContainer.id)
                     removeOtherTweets(tweetContainer.id)
@@ -342,6 +370,7 @@ function drawMap(response) {
             const retweets = await quotedOf(id)
             let locationRetweet = ''
             let geocode = []
+            retweetNb = retweets.data.length
             if (retweets.data) {
                 for (let retweet of retweets.data) {
                     let all = {}
@@ -377,16 +406,35 @@ function drawMap(response) {
         function addLines(list) {
             let idCountries = []
             let nameCountries = []
+            let list_gradient = {}
             for (let retweet of list) {
                 nameCountries.push(retweet.location)
+                if (getIdCountry([retweet.location], allCountries) in list_gradient){
+                    list_gradient[getIdCountry([retweet.location], allCountries)].gradient ++ 
+                } else {
+                    list_gradient[getIdCountry([retweet.location], allCountries)] = {gradient:1}
+                }
             }
+            console.log(list_gradient)
             idCountries = getIdCountry(nameCountries, allCountries)
             idCountries.forEach(idCountry => {
+                console.log((list_gradient[idCountry].gradient/list.length) * 100, list.length)
                 map.setFeatureState(
                     { source: 'country', id: idCountry },
                     { retweets: true }
+                    
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry },
+                    { gradient: (list_gradient[idCountry].gradient/list.length) * 100 }
+                    
                 )
             })
+            map.setPaintProperty(
+                'retweets',
+                'fill-opacity',
+                test
+            )
         }
 
         search.addEventListener('click', (e) => {
@@ -394,10 +442,11 @@ function drawMap(response) {
             tweetsDivR[1].innerHTML = ''
             search.disabled = true
             divNum = 1
-            if (searchInput.value.includes('@')){
-                addMarkersMap(searchInput.value.replace('@',''), 'search')
-            } else if ( searchInput.value.includes('#')) {
+
+            if ( searchInput.value.includes('#')) {
                 addMarkersMapHashtag(searchInput.value.replace('#','%23'))
+            } else {
+                addMarkersMap(searchInput.value, 'search')
             }
             
         })
@@ -405,6 +454,7 @@ function drawMap(response) {
         buttonMyTweets.addEventListener('click', (e) => {
             list_all_tweets = []
             divNum = 0
+            currentPage = 1
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
             })
@@ -412,6 +462,10 @@ function drawMap(response) {
                 map.setFeatureState(
                     { source: 'country', id: idCountry.id },
                     { retweets: false }
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { gradient: 0 }
                 )
             })
             tweetsDivR[0].innerHTML = ''
@@ -422,6 +476,7 @@ function drawMap(response) {
             list_all_tweets = []
             searchInput.value = ''
             tweetsDivR[1].innerHTML = ''
+            currentPage = 1
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
             })
@@ -429,6 +484,10 @@ function drawMap(response) {
                 map.setFeatureState(
                     { source: 'country', id: idCountry.id },
                     { retweets: false }
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { gradient: 0 }
                 )
             })
         })
