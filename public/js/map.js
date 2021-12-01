@@ -215,7 +215,7 @@ function drawMap(response) {
 
         function renderingTweets(listAllTweets, pageIn, div) {
             tweetsDivR[div].innerHTML = ''
-            for (let i = (pageIn-1)*4 ; i<((pageIn-1)*4)+4; i++) {
+            for (let i = (pageIn - 1) * 4; i < ((pageIn - 1) * 4) + 4; i++) {
                 if (listAllTweets[i]) {
                     tweetsDivR[div].insertAdjacentHTML('beforeend', listAllTweets[i])
                 } else {
@@ -275,7 +275,7 @@ function drawMap(response) {
                     let all = {}
                     if (retweet.location) {
                         locationRetweet = retweet.location
-                        locationRetweet = await getAdressGeocode(response, retweet.location).then(function (response) { return response }).catch(function (error) {return ' not found' })
+                        locationRetweet = await getAdressGeocode(response, retweet.location).then(function (response) { return response }).catch(function (error) { return ' not found' })
                         if (locationRetweet && typeof locationRetweet !== 'string') {
                             geocode = locationRetweet.center
                             if (!locationRetweet.context) {
@@ -355,34 +355,89 @@ function drawMap(response) {
                 )
             })
         })
-
+        function changePage(e, move, numPage, numberPage) {
+            numPage.querySelector('.select').classList.remove('select')
+            let num1 = parseInt(numPage.querySelector('.page1').innerHTML)
+            if (move === 0) {
+                e.target.classList.add('select')
+                currentPage = num1 + numberPage - 1
+            } else {
+                numPage.querySelector('.page2').classList.add('select')
+                for (let i = 0; i < 3; i++) {
+                    numPage.querySelector('.page' + (i + 1)).innerHTML = num1 + i + move
+                }
+                currentPage = num1 + 1 + move
+            }
+            renderingTweets(list_all_tweets, currentPage, divNum)
+        }
         document.querySelectorAll(".numPage").forEach(numPage => {
             numPage.addEventListener('click', e => {
                 if (e.target.classList.contains('pageLeft')) {
-                    if (currentPage > 1) {
-                        currentPage--
+                    let num1 = parseInt(numPage.querySelector('.page1').innerHTML)
+                    if (currentPage >1) {
+                        if (numPage.querySelector('.select').classList.contains('page2')) {
+                            if (currentPage === 2) {
+                                numPage.querySelector('.select').classList.remove('select')
+                                numPage.querySelector('.page1').classList.add('select')
+                            } else {
+                                for (let i = 1; i <= 3; i++) {
+                                    numPage.querySelector('.page' + (i)).innerHTML = num1 - 2 + i
+                                }
+                            }
+                            currentPage--;
+                        } else if (numPage.querySelector('.select').classList.contains('page3')) {
+                            numPage.querySelector('.select').classList.remove('select')
+                            numPage.querySelector('.page2').classList.add('select')
+                            currentPage = 8
+                        }
                         renderingTweets(list_all_tweets, currentPage, divNum)
                     } else {
                         currentPage = 1
                     }
                 } else if (e.target.classList.contains('page1')) {
-                    currentPage = e.target.innerHTML
-                    renderingTweets(list_all_tweets, currentPage, divNum)
+                    let numberPage = 1
+                    if ((numPage.querySelector('.select').classList.contains('page2') && currentPage === 2) ||
+                        (numPage.querySelector('.select').classList.contains('page3') && currentPage === 3)
+                        || currentPage <= 1) {
+                        changePage(e, 0, numPage, numberPage)
+                    } else {
+                        changePage(e, -1, numPage, numberPage)
+                    }
                 } else if (e.target.classList.contains('page2')) {
-                    currentPage = e.target.innerHTML
-                    renderingTweets(list_all_tweets, currentPage, divNum)
+                    let numberPage = 2
+                    changePage(e, 0, numPage, numberPage)
                 } else if (e.target.classList.contains('page3')) {
-                    currentPage = e.target.innerHTML
-                    renderingTweets(list_all_tweets, currentPage, divNum)
+                    let numberPage = 3
+                    if ((numPage.querySelector('.select').classList.contains('page2') && currentPage === 8) ||
+                        (numPage.querySelector('.select').classList.contains('page1') && currentPage === 7)
+                        || currentPage >= 9) {
+                        changePage(e, 0, numPage, numberPage)
+                    } else {
+                        changePage(e, 1, numPage, numberPage)
+                    }
                 } else if (e.target.classList.contains('pageRight')) {
-                    if (currentPage <= 3) {
-                        currentPage++
+                    let num1 = parseInt(numPage.querySelector('.page1').innerHTML)
+                    if (currentPage < 9) {
+                        if (numPage.querySelector('.select').classList.contains('page2')) {
+                            if (currentPage === 8) {
+                                numPage.querySelector('.select').classList.remove('select')
+                                numPage.querySelector('.page3').classList.add('select')
+                            } else {
+                                for (let i = 1; i <= 3; i++) {
+                                    numPage.querySelector('.page' + (i)).innerHTML = num1 + i
+                                }
+                            }
+                            currentPage++;
+                        } else if (numPage.querySelector('.select').classList.contains('page1')) {
+                            numPage.querySelector('.select').classList.remove('select')
+                            numPage.querySelector('.page2').classList.add('select')
+                            currentPage = 2
+                        }
                         renderingTweets(list_all_tweets, currentPage, divNum)
                     } else {
-                        currentPage = 3
+                        currentPage = 9
                     }
                 }
-        
             })
         })
 
