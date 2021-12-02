@@ -13,6 +13,8 @@ const buttonSearch = document.getElementsByClassName('b2')[0]
 const buttonMyTweets = document.getElementsByClassName('b1')[0]
 const tweetDivMe = document.getElementById('titleMyTweets')
 
+const listAutocomplete = document.getElementById('listAutocomplete')
+
 let list_all_tweets = []
 let divNum = 0
 let retweetNb = 0
@@ -28,7 +30,6 @@ for (let i = 0; i<91; i++) {
     test.push(i)
     test.push((i+10)/100)
 }
-console.log(test)
 
 let openSearchFollow = false
 let timeLineText = ['1 ans', '9 mois', '6 mois', '4 mois', '3 mois', '2 mois', '1 mois', '3 semaines', '2 semaines', '1 semaine', '1 jour']
@@ -370,8 +371,8 @@ function drawMap(response) {
             const retweets = await quotedOf(id)
             let locationRetweet = ''
             let geocode = []
-            retweetNb = retweets.data.length
             if (retweets.data) {
+                retweetNb = retweets.data.length
                 for (let retweet of retweets.data) {
                     let all = {}
                     if (retweet.location) {
@@ -415,10 +416,8 @@ function drawMap(response) {
                     list_gradient[getIdCountry([retweet.location], allCountries)] = {gradient:1}
                 }
             }
-            console.log(list_gradient)
             idCountries = getIdCountry(nameCountries, allCountries)
             idCountries.forEach(idCountry => {
-                console.log((list_gradient[idCountry].gradient/list.length) * 100, list.length)
                 map.setFeatureState(
                     { source: 'country', id: idCountry },
                     { retweets: true }
@@ -522,6 +521,35 @@ function drawMap(response) {
             })
         })
 
+        searchInput.addEventListener('input', async e => {
+            let listItem = []
+            if (!searchInput.value.includes('#') && searchInput.value.length > 2) {
+                let autocomplete = await getAutocomplete(searchInput.value)
+                for (let user of autocomplete._realData) {
+                    listItem.push(user)
+                    listItem.sort((a, b) => (a.followers_count > b.followers_count) ? -1 : ((b.followers_count > a.followers_count) ? 1 : 0))
+                }
+            }
+            listAutocomplete.innerHTML = ''
+            let autocompleteItem = []
+            if (listItem.length > 0 ) {
+                let item = 3
+                for (let i=0; i < item; i++) {
+                    if (listItem[i]) {
+                        let name = listItem[i].name.toLowerCase()
+                        let username = listItem[i].screen_name.toLowerCase()
+                        if (name.includes(searchInput.value.toLowerCase()) || username.includes(searchInput.value.toLowerCase())) {
+                            autocompleteItem = `<option value=${listItem[i].screen_name}>${listItem[i].name}</option>`
+                            listAutocomplete.insertAdjacentHTML('beforeend', autocompleteItem)
+                        } else {
+                            item ++
+                        }
+                    }
+                    
+                }
+            }
+        })
+
         tweetsDivR[0].innerHTML = ''
         addMarkersMap(sessionStorage.usercompanyTwitter, 'myTweets')
     })
@@ -531,6 +559,18 @@ function drawMap(response) {
 /*
 Link to API (Twitter/mapbox geocode)
 */
+
+function getAutocomplete(user) {
+    return $.ajax({
+        url: `/autocompleteUser?user=${user}`,
+        type: "POST",
+        success: function (response, status, http) {
+            if (response) {
+                return response
+            }
+        }
+    })
+}
 
 function getHashtag(hashtag) {
     return $.ajax({

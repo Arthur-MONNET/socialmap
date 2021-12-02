@@ -56,6 +56,15 @@ app.post('/quotedOf', (req, res) => {
     .then(response =>
         res.send(response)
     )
+    .catch(error => console.error(error))
+})
+
+app.post('/autocompleteUser', (req, res) => {
+    client.v1.searchUsers(req.query['user'], {"count": 20})
+    .then(response => 
+        res.send(response)
+    )
+    .catch(error => console.error(error))
 })
 
 app.listen(port)
