@@ -915,3 +915,9 @@ document.querySelector('.addFollowWrapper>#searchFollow>svg').addEventListener('
     }, 500)
 })
 
+document.querySelector('#star').addEventListener('click',()=>{
+    alert("Les Tweets ont été sauvgardés.")
+})
+document.querySelector('#download').addEventListener('click',()=>{
+    alert("Le CSV à bien été Téléchargé !")
+})
