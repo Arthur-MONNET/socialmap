@@ -367,6 +367,7 @@ body{
     border: var(--yellow) solid 1px;
     border-radius: 2.5vh;
     padding: 2vh;
+    -webkit-appearance: none
 }
 #search::placeholder{
     color: black;
@@ -375,6 +376,10 @@ body{
     outline: none !important;
     border: var(--yellow) solid 1px;
 }
+
+#search::-webkit-calendar-picker-indicator {
+    color: transparent;
+  }
 
 /*----------------------------------------------------------------------------------------*/
 
