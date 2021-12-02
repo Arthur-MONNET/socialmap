@@ -38,6 +38,9 @@ let list_all_tweets = []
 let divNum = 0
 let nbTweetsIn = 5
 
+let lastLocation = [-1.876659, 54.215705]
+let allLocation = {}
+
 let test =  [
     'step',
     ['feature-state', 'gradient'],
@@ -292,6 +295,8 @@ function drawMap(response) {
                             </div>`
 
                 list_all_tweets.push(inTweet)
+                lastLocation = location.geo
+                allLocation[popupTextId.id] = location.geo
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
                 )
@@ -352,6 +357,7 @@ function drawMap(response) {
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
                 )
+                lastLocation = location.geo
                 const el = document.createElement('div')
                 el.id = popupTextId.id
                 el.classList.add('tweetsMarker')
@@ -374,6 +380,7 @@ function drawMap(response) {
                     return
                 }
             }
+            map.flyTo({center: lastLocation, zoom: 2})
             addClickTweets()
         }
 
@@ -382,7 +389,7 @@ function drawMap(response) {
             const arrayTweetsDiv = Array.prototype.slice.call(tweetsInsered)
             arrayTweetsDiv.forEach(tweetContainer => {
                 tweetContainer.addEventListener('click', async () => {
-                    /* map.flyTo({center: [0, 0], zoom: 2.5}) */
+                    map.flyTo({center: allLocation[tweetContainer.id], zoom: 2})
                     allCountries.forEach(idCountry => {
                         map.setFeatureState(
                             { source: 'country', id: idCountry.id },
@@ -512,6 +519,7 @@ function drawMap(response) {
         })
 
         buttonMyTweets.addEventListener('click', (e) => {
+            map.flyTo({center: [0, 0], zoom: 1})
             list_all_tweets = []
             divNum = 0
             currentPage = 1
@@ -534,6 +542,7 @@ function drawMap(response) {
         })
 
         buttonSearch.addEventListener('click', (e) => {
+            map.flyTo({center: [0, 0], zoom: 1})
             list_all_tweets = []
             searchInput.value = ''
             tweetsDivR[1].innerHTML = ''
@@ -731,6 +740,7 @@ function drawMap(response) {
         }
 
         buttonSuivis.addEventListener('click', e => {
+            map.flyTo({center: [0, 0], zoom: 1})
             followdivNewClick()
         })
 
