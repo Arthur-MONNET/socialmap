@@ -4,6 +4,7 @@ let zoomUp = document.getElementById('zoomUp')
 let zoomDown = document.getElementById('zoomDown')
 let zoomAll = document.getElementById('zoomAll')
 
+//Recherche
 let searchInput = document.getElementById('search')
 let search = document.querySelector('#searchWrapper>button')
 let timeLines = document.querySelectorAll('.timeLineWrapper')
@@ -14,6 +15,7 @@ const tweetsDivR = document.getElementsByClassName('content')
 let tweetsInsered = document.getElementsByClassName('tweet')
 let currentPage = 1
 const buttonSearch = document.getElementsByClassName('b2')[0]
+
 //Mytweets
 const buttonMyTweets = document.getElementsByClassName('b1')[0]
 const tweetDivMe = document.getElementById('titleMyTweets')
@@ -22,6 +24,9 @@ const listAutocomplete = document.getElementById('listAutocomplete')
 
 const profilename = document.querySelector("#profile>p")
 const profileimage = document.querySelector("#profile>img")
+
+//Suivis
+const buttonSuivis = document.getElementsByClassName('b3')[0]
 
 const suiviInput = document.querySelector('#searchFollow>input')
 const suiviAutocomplete = document.getElementById('autocompleteSuivi')
@@ -422,7 +427,6 @@ function drawMap(response) {
             let locationRetweet = ''
             let geocode = []
             if (retweets.data) {
-                let retweetNb = retweets.data.length
                 for (let retweet of retweets.data) {
                     let all = {}
                     if (retweet.location) {
@@ -693,11 +697,9 @@ function drawMap(response) {
         })
 
         followAddButton.addEventListener('click', async e => {
-            console.log(suiviInput.value)
             let newFollow = await getUser(suiviInput.value)
-            console.log(newFollow)
             let newFollowDiv = 
-                `<div class="input followWrapper">
+                `<div class="input followWrapper" id=${JSON.parse(newFollow).data.username}>
                     <div>
                         <img class="profileTweet" src="${JSON.parse(newFollow).data.profile_image_url}" />
                         <div>
@@ -713,6 +715,23 @@ function drawMap(response) {
                     </svg>
                 </div>`
             followsWrapper.insertAdjacentHTML('beforeend', newFollowDiv)
+            followdivNewClick()
+        })
+
+        function followdivNewClick() {
+            let followDivs = document.getElementsByClassName('followWrapper')
+            let arrayfollowDivs = Array.prototype.slice.call(followDivs)
+            for (let followDiv of arrayfollowDivs) {
+                followDiv.addEventListener('click', e => {
+                    buttonSearch.click()
+                    searchInput.value = followDiv.id
+                    search.click()
+                })
+            }
+        }
+
+        buttonSuivis.addEventListener('click', e => {
+            followdivNewClick()
         })
 
         tweetsDivR[0].innerHTML = ''
