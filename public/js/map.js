@@ -295,8 +295,8 @@ function drawMap(response) {
                             </div>`
 
                 list_all_tweets.push(inTweet)
-                lastLocation = location.geo
-                allLocation[popupTextId.id] = location.geo
+                lastLocation = [location.geo[0], location.geo[1]-20]
+                allLocation[popupTextId.id] = [location.geo[0], location.geo[1]-20]
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
                 )
@@ -357,7 +357,8 @@ function drawMap(response) {
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
                 )
-                lastLocation = location.geo
+                lastLocation = [location.geo[0], location.geo[1]-20]
+                allLocation[popupTextId.id] = [location.geo[0], location.geo[1]-20]
                 const el = document.createElement('div')
                 el.id = popupTextId.id
                 el.classList.add('tweetsMarker')
@@ -503,7 +504,7 @@ function drawMap(response) {
             )
         }
 
-        search.addEventListener('click', (e) => {
+        search.addEventListener('click', async (e) => {
             list_all_tweets = []
             tweetsDivR[1].innerHTML = ''
             search.disabled = true
@@ -511,11 +512,11 @@ function drawMap(response) {
             nbTweetsIn = 4
 
             if ( searchInput.value.includes('#')) {
-                addMarkersMapHashtag(searchInput.value.replace('#','%23'))
+                await addMarkersMapHashtag(searchInput.value.replace('#','%23'))
             } else {
-                addMarkersMap(searchInput.value, 'search')
+                await addMarkersMap(searchInput.value, 'search')
             }
-            
+            map.flyTo({center: lastLocation, zoom: 2})
         })
 
         buttonMyTweets.addEventListener('click', (e) => {
@@ -740,6 +741,19 @@ function drawMap(response) {
         }
 
         buttonSuivis.addEventListener('click', e => {
+            document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
+                tweetMarker.remove()
+            })
+            allCountries.forEach(idCountry => {
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { retweets: false }
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { gradient: 0 }
+                )
+            })
             map.flyTo({center: [0, 0], zoom: 1})
             followdivNewClick()
         })
