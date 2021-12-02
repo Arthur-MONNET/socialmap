@@ -1,12 +1,14 @@
 header{
-    width : 80vw;
-    padding: 0 10vw;
+    width : 85vw;
+    padding: 8vh 10vw 0 5vw;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-    height: 25vh;
+    height: 15vh;
 }
 header>div>.darkButton{
     margin-right: 15px;
+}
+header>img{
+    height: 15vh;
 }

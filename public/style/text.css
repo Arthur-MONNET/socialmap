@@ -19,7 +19,7 @@ h3{
 }
 h2{
     font-weight: 400;
-    font-size: 3vw;
+    font-size: 2.5vw;
     margin: 0;
     font-family: 'Cardo', serif;
 }
@@ -37,6 +37,6 @@ h2{
         font-size: 21.96px;
     }
     h2{
-        font-size: 54.9px;
+        font-size: calc(2.5px * 18.30);
     }
 }

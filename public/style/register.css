@@ -16,6 +16,22 @@
     align-items: center;
 }
 
+#registerContent>#buttonBackWrapper{
+    width: 10vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#registerContent #buttonBack{
+    padding: 2vh 3vh;
+    background: none;
+    border: none;
+}
+#registerContent #buttonBack>svg{
+    height: 5vh;
+}
+
 /* ---------------------------------------------------------- */
 /* ---------------------------------------------------------- */
 
@@ -26,15 +42,19 @@
 }
 
 #registerContent>.left>img{
-    margin-bottom: 3vh;
+    margin:0 1vw 3vh;
+    max-height: 50vh;
+    max-width: 100%;
 }
 #registerContent>.left>div{
-    margin-top: 12vh;
+    margin-top: 10vh;
+    padding-left: 1.5vw;
 }
 
 #registerContent>.left>div>p{
     font-weight: 400;
     margin: 0;
+    margin-top: 3vh;
     font-family: 'Cardo', serif;
     font-size: 2vw;
     display: none;

@@ -135,6 +135,9 @@ let submitText = [{ text: 'Suivant', class: 'blueRightButton', onsubmit: 'transf
 { text: 'Inscription', class: 'yellowRightButton', name: 'mappage', onsubmit: '' }]
 function transformPage(i) {
     stage = i
+    if(stage>1){
+        document.querySelector('#buttonBack').removeAttribute("name")
+    }
     register.querySelector('.left p').innerHTML = rdmText[Math.floor(Math.random() * rdmText.length)]
     stageLine.querySelector('.frontline').style.width = `calc((25vw - 5vh) / 4 * ${i - 1})`
     stageLine.querySelector('.frontline').style.maxWidth = `calc((600px - 5vh) / 4 * ${i - 1})`
@@ -145,6 +148,7 @@ function transformPage(i) {
     form.querySelector('.submit').classList.remove()
     form.querySelector('.submit').classList.add(submitText[i - 1].class)
     register.querySelector('.left>img').src = `../asset/img/register_${i}.png`
+    
     if (i === 1) {
         formWrapper.querySelector('.buttons').innerHTML = buttons
     } else {
@@ -166,19 +170,18 @@ function transformPage(i) {
 window.addEventListener('load', () => {
     transformPage(stage)
 })
-
+/* 
 document.addEventListener("keyup", function (e) {
     e.preventDefault();
     if (e.keyCode === 39) { if (stage !== 5) transformPage(stage + 1) }
     else if (e.keyCode === 37) if (stage !== 1) transformPage(stage - 1)
-});
+}); */
 
 form.addEventListener("submit", () => {
 
     if (stage === 3) {
         let data = new FormData(form);
         for (const entry of data) {
-            console.log(entry)
             if (entry[1] === "solo") {
                 transformPage(5)
             } else if (entry[1] === "createGroups") {
@@ -196,7 +199,6 @@ form.addEventListener("submit", () => {
         };
     } else {
         form.querySelectorAll('section input').forEach(input => {
-            console.log(input.name)
             if (input.name === "teamName") {
                 dataTeam.teamName = input.value
             } else {
@@ -229,5 +231,15 @@ form.addEventListener('click', e => {
     }
 }, false)
 
+document.querySelector('#buttonBack').addEventListener('click',()=>{
+    if(stage>2){
+        transformPage(stage - 1)
+    }else if(stage===2){
+        transformPage(stage - 1)
+        setTimeout(() => {
+            document.querySelector('#buttonBack').setAttribute("name","home")
+        }, 10);
+    }
+})
 
 

@@ -27,11 +27,13 @@
 }
 
 #loginContent>.left>img{
-    margin-bottom: 3vh;
+    margin:0 1vw 3vh;
+    max-height: 50vh;
+    max-width: 100%;
 }
 
 #loginContent>.left>div{
-    margin-top: 12vh;
+    margin-top: 10vh;
 }
 
 #loginContent>.left>div>p{
