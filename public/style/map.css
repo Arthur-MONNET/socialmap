@@ -508,7 +508,12 @@ body{
     width: 100%;
 }
 
+/*----------------------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------------------*/
+
 #profile{
+    cursor: pointer;
     z-index: 10;
     display: flex;
     align-items: center;
@@ -522,8 +527,35 @@ body{
     height: 6vh;
     border-radius: 50%;
     background: #a8a8a8;
-    margin: 0 6vh 0 1.5vh;
+    margin: 0 1.5vh;
 }
 #profile>p{
     color: #a8a8a8;
+}
+
+/*----------------------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------------------*/
+
+#zoomWrapper{
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 4vw;
+    height: 12vw;
+    max-width: 80px;
+    max-height: 240px;
+}
+#zoomWrapper>svg{
+    width: 2.5vw;
+    height: 2.5vw;
+    max-width: 50px;
+    max-height: 50px;
+    cursor: pointer;
+}
+#zoomDown{
+    margin: 1vw 0;
 }

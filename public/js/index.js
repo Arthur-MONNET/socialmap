@@ -41,7 +41,6 @@ else {
 function submitRedirect() {
     iframe.contentWindow.document.querySelectorAll('form').forEach(form => {
         form.querySelector('[type="submit"]').onclick = () => {
-            console.log(form.querySelector('[type="submit"]'))
             if (form.querySelector('[type="submit"]').name) {
                 let allAreFilled = true;
                 form.querySelectorAll("[required]").forEach(req => {
@@ -52,7 +51,6 @@ function submitRedirect() {
                     setIframe(form.querySelector('[type="submit"]').name)
                 }
             } else {
-                console.log('hehe')
                 submitRedirect()
             }
 
@@ -64,7 +62,6 @@ function searchLinks() {
     for (let i in links) {
         links[i] = iframe.contentWindow.document.querySelectorAll('.' + i + 'Link')
         links[i].forEach(link => {
-            console.log(link);
             link.addEventListener('mousedown', e => {
                 setIframe(i)
             });

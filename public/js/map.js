@@ -1,4 +1,9 @@
 import countries from '../asset/world.js'
+
+let zoomUp = document.getElementById('zoomUp')
+let zoomDown = document.getElementById('zoomDown')
+let zoomAll = document.getElementById('zoomAll')
+
 let searchInput = document.getElementById('search')
 let search = document.querySelector('#searchWrapper>button')
 let timeLines = document.querySelectorAll('.timeLineWrapper')
@@ -17,6 +22,7 @@ let list_all_tweets = []
 let divNum = 0
 
 let openSearchFollow = false
+let allZoom = [1, 2, 3.5, 4.5, 6, 7, 9]
 let timeLineText = ['1 ans', '9 mois', '6 mois', '4 mois', '3 mois', '2 mois', '1 mois', '3 semaines', '2 semaines', '1 semaine', '1 jour']
 $.ajax({
     url: "/mapToken",
@@ -77,8 +83,8 @@ function drawMap(response) {
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/zak74/ckuzm2lot0yjg14s4e5k4202y',
-        center: [5, 45],
-        zoom: 4.5
+        center: [0, 0],
+        zoom: 1
     })
     let hoveredCountryId = null
     map.on('load', () => {
@@ -129,7 +135,37 @@ function drawMap(response) {
                 )
             })
         }
-        map.addControl(new mapboxgl.NavigationControl());
+        zoomUp.onclick = () => {
+            let newZoom
+            let oldZoom = map.getZoom()
+            if (oldZoom < 9) {
+                for (let i = 0; i < allZoom.length; i++) {
+                    if (oldZoom < allZoom[i]) {
+                        newZoom = allZoom[i];
+                        break;
+                    }
+                }
+                map.zoomTo(newZoom, { duration: 500 })
+            }
+
+        }
+        zoomDown.onclick = () => {
+            let oldZoom = map.getZoom()
+            let newZoom
+            if (oldZoom > 1) {
+                for (let i = allZoom.length - 1; i >= 0; i--) {
+                    console.log(oldZoom, allZoom[i])
+                    if (oldZoom > allZoom[i]) {
+                        newZoom = allZoom[i];
+                        break;
+                    }
+                }
+                map.zoomTo(newZoom, { duration: 500 })
+            }
+        }
+        zoomAll.onclick = () => {
+            map.zoomTo(1, { duration: 500 })
+        }
         map.addLayer({
             'id': 'outline',
             'type': 'line',
@@ -374,7 +410,7 @@ function drawMap(response) {
             numPage.addEventListener('click', e => {
                 if (e.target.classList.contains('pageLeft')) {
                     let num1 = parseInt(numPage.querySelector('.page1').innerHTML)
-                    if (currentPage >1) {
+                    if (currentPage > 1) {
                         if (numPage.querySelector('.select').classList.contains('page2')) {
                             if (currentPage === 2) {
                                 numPage.querySelector('.select').classList.remove('select')
