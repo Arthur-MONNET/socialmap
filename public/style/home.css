@@ -6,6 +6,10 @@
     align-items: center;
 }
 
+body{
+    overflow-x: hidden;
+}
+
 #bg{
     height: 318vh;
 }
