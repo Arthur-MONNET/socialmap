@@ -26,6 +26,9 @@ const profileimage = document.querySelector("#profile>img")
 const suiviInput = document.querySelector('#searchFollow>input')
 const suiviAutocomplete = document.getElementById('autocompleteSuivi')
 
+let followAddButton = document.querySelector('#searchFollow>svg')
+let followsWrapper = document.getElementsByClassName('follows')[0]
+
 let list_all_tweets = []
 let divNum = 0
 let nbTweetsIn = 5
@@ -210,7 +213,6 @@ function drawMap(response) {
             let newZoom
             if (oldZoom > 1) {
                 for (let i = allZoom.length - 1; i >= 0; i--) {
-                    console.log(oldZoom, allZoom[i])
                     if (oldZoom > allZoom[i]) {
                         newZoom = allZoom[i];
                         break;
@@ -690,6 +692,29 @@ function drawMap(response) {
             }
         })
 
+        followAddButton.addEventListener('click', async e => {
+            console.log(suiviInput.value)
+            let newFollow = await getUser(suiviInput.value)
+            console.log(newFollow)
+            let newFollowDiv = 
+                `<div class="input followWrapper">
+                    <div>
+                        <img class="profileTweet" src="${JSON.parse(newFollow).data.profile_image_url}" />
+                        <div>
+                            <p class="contentTweet nameTweet">${JSON.parse(newFollow).data.name}</p>
+                            <p class="contentTweet atTweet">@${JSON.parse(newFollow).data.username}</p>
+                        </div>
+                    </div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="closeButton"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41L17.59 5Z"
+                            fill="#000" />
+                    </svg>
+                </div>`
+            followsWrapper.insertAdjacentHTML('beforeend', newFollowDiv)
+        })
+
         tweetsDivR[0].innerHTML = ''
         addMarkersMap(sessionStorage.usercompanyTwitter, 'myTweets')
     })
@@ -835,9 +860,7 @@ document.addEventListener('mouseup', e => {
     click = false
 });
 document.querySelector('.addFollowWrapper').addEventListener('click', () => {
-    console.log(openSearchFollow)
     if (!openSearchFollow) {
-        console.log(openSearchFollow)
         document.querySelector('#searchFollow>input').focus()
         document.querySelector('#placeholderSearchFollow').style.opacity = "0"
         document.querySelector('#searchFollow').style.display = "flex"
@@ -851,7 +874,6 @@ document.querySelector('.addFollowWrapper').addEventListener('click', () => {
 
 })
 document.querySelector('.addFollowWrapper>#searchFollow>svg').addEventListener('click', () => {
-    console.log(openSearchFollow)
     document.querySelector('#searchFollow').style.opacity = "0"
     document.querySelector('#searchFollow').style.width = "0"
     setTimeout(() => {
