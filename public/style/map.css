@@ -379,7 +379,11 @@ body{
 
 #search::-webkit-calendar-picker-indicator {
     color: transparent;
-  }
+}
+
+#searchFollow>input::-webkit-calendar-picker-indicator {
+    color: transparent;
+}
 
 /*----------------------------------------------------------------------------------------*/
 

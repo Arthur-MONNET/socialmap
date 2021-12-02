@@ -20,10 +20,15 @@ const tweetDivMe = document.getElementById('titleMyTweets')
 
 const listAutocomplete = document.getElementById('listAutocomplete')
 
+const profilename = document.querySelector("#profile>p")
+const profileimage = document.querySelector("#profile>img")
+
+const suiviInput = document.querySelector('#searchFollow>input')
+const suiviAutocomplete = document.getElementById('autocompleteSuivi')
+
 let list_all_tweets = []
 let divNum = 0
-let retweetNb = 0
-let gradient = 0
+let nbTweetsIn = 5
 
 let test =  [
     'step',
@@ -230,6 +235,10 @@ function drawMap(response) {
         // add marker for tweets 
         async function addMarkersMap(user, scope) {
             let userData = await getUser(user)
+            if (user === sessionStorage.usercompanyTwitter && scope==='myTweets') {
+                profilename.innerHTML = JSON.parse(userData).data.name
+                profileimage.src = JSON.parse(userData).data.profile_image_url
+            }
             if (JSON.parse(userData).errors && scope === 'search') {
                 search.disabled = false
                 return tweetsDivR[1].insertAdjacentHTML('afterBegin', '<div>Utilisateur non trouvé</div>')
@@ -289,10 +298,12 @@ function drawMap(response) {
                     .addTo(map)
             }
             let div = 0
+            let nbTweets = 5
             if (scope === 'search') {
                 div = 1
+                nbTweets = 4
             }
-            renderingTweets(list_all_tweets, currentPage, div)
+            renderingTweets(list_all_tweets, currentPage, div, nbTweets)
         }
 
         async function addMarkersMapHashtag(hashtag) {
@@ -343,12 +354,12 @@ function drawMap(response) {
                     .setPopup(popup)
                     .addTo(map)
             }
-            renderingTweets(list_all_tweets, currentPage, 1)
+            renderingTweets(list_all_tweets, currentPage, 1, 4)
         }
 
-        function renderingTweets(listAllTweets, pageIn, div) {
+        function renderingTweets(listAllTweets, pageIn, div, nbTweet) {
             tweetsDivR[div].innerHTML = ''
-            for (let i = (pageIn - 1) * 4; i < ((pageIn - 1) * 4) + 4; i++) {
+            for (let i = (pageIn - 1) * nbTweet; i < ((pageIn - 1) * nbTweet) + nbTweet; i++) {
                 if (listAllTweets[i]) {
                     tweetsDivR[div].insertAdjacentHTML('beforeend', listAllTweets[i])
                 } else {
@@ -477,6 +488,7 @@ function drawMap(response) {
             tweetsDivR[1].innerHTML = ''
             search.disabled = true
             divNum = 1
+            nbTweetsIn = 4
 
             if ( searchInput.value.includes('#')) {
                 addMarkersMapHashtag(searchInput.value.replace('#','%23'))
@@ -490,6 +502,7 @@ function drawMap(response) {
             list_all_tweets = []
             divNum = 0
             currentPage = 1
+            nbTweetsIn = 5
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
             })
@@ -539,7 +552,7 @@ function drawMap(response) {
                 }
                 currentPage = num1 + 1 + move
             }
-            renderingTweets(list_all_tweets, currentPage, divNum)
+            renderingTweets(list_all_tweets, currentPage, divNum, nbTweetsIn)
         }
         document.querySelectorAll(".numPage").forEach(numPage => {
             numPage.addEventListener('click', e => {
@@ -561,7 +574,7 @@ function drawMap(response) {
                             numPage.querySelector('.page2').classList.add('select')
                             currentPage = 8
                         }
-                        renderingTweets(list_all_tweets, currentPage, divNum)
+                        renderingTweets(list_all_tweets, currentPage, divNum, nbTweetsIn)
                     } else {
                         currentPage = 1
                     }
@@ -604,7 +617,7 @@ function drawMap(response) {
                             numPage.querySelector('.page2').classList.add('select')
                             currentPage = 2
                         }
-                        renderingTweets(list_all_tweets, currentPage, divNum)
+                        renderingTweets(list_all_tweets, currentPage, divNum, nbTweetsIn)
                     } else {
                         currentPage = 9
                     }
@@ -632,6 +645,35 @@ function drawMap(response) {
                         if (name.includes(searchInput.value.toLowerCase()) || username.includes(searchInput.value.toLowerCase())) {
                             autocompleteItem = `<option value=${listItem[i].screen_name}>${listItem[i].name}</option>`
                             listAutocomplete.insertAdjacentHTML('beforeend', autocompleteItem)
+                        } else {
+                            item ++
+                        }
+                    }
+                    
+                }
+            }
+        })
+
+        suiviInput.addEventListener('input', async e => {
+            let listItem = []
+            if (!suiviInput.value.includes('#') && suiviInput.value.length > 2) {
+                let autocomplete = await getAutocomplete(suiviInput.value)
+                for (let user of autocomplete._realData) {
+                    listItem.push(user)
+                    listItem.sort((a, b) => (a.followers_count > b.followers_count) ? -1 : ((b.followers_count > a.followers_count) ? 1 : 0))
+                }
+            }
+            suiviAutocomplete.innerHTML = ''
+            let autocompleteItem = []
+            if (listItem.length > 0 ) {
+                let item = 3
+                for (let i=0; i < item; i++) {
+                    if (listItem[i]) {
+                        let name = listItem[i].name.toLowerCase()
+                        let username = listItem[i].screen_name.toLowerCase()
+                        if (name.includes(suiviInput.value.toLowerCase()) || username.includes(suiviInput.value.toLowerCase())) {
+                            autocompleteItem = `<option value=${listItem[i].screen_name}>${listItem[i].name}</option>`
+                            suiviAutocomplete.insertAdjacentHTML('beforeend', autocompleteItem)
                         } else {
                             item ++
                         }
