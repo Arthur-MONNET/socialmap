@@ -18,8 +18,23 @@ const buttonSearch = document.getElementsByClassName('b2')[0]
 const buttonMyTweets = document.getElementsByClassName('b1')[0]
 const tweetDivMe = document.getElementById('titleMyTweets')
 
+const listAutocomplete = document.getElementById('listAutocomplete')
+
 let list_all_tweets = []
 let divNum = 0
+let retweetNb = 0
+let gradient = 0
+
+let test =  [
+    'step',
+    ['feature-state', 'gradient'],
+    0
+]
+
+for (let i = 0; i<91; i++) {
+    test.push(i)
+    test.push((i+10)/100)
+}
 
 let openSearchFollow = false
 let allZoom = [1, 2, 3.5, 4.5, 6, 7, 9]
@@ -38,13 +53,38 @@ $.ajax({
 async function addMarker(token, user) {
     const geocodeUser = await getAdressGeocode(token, user.data.location)
     const temp2 = await getTweetsUser(user.data.id)
-    console.log(temp2)
     return {
         "tweets": temp2._realData,
         "userLocation": geocodeUser,
         "photo": user.data.profile_image_url,
         "name": user.data.name,
         "username": user.data.username
+    }
+}
+
+async function addMarkerHashtag(token, hashtag) {
+    const allTweets = await getHashtag(hashtag)
+    let allUser = {
+        'location': [],
+        'name':[],
+        'photo': [],
+        'username': []
+    }
+    if (!allTweets._realData.data) {
+        return {}
+    }
+    for (let user in allTweets._realData.includes.users) {
+        allUser.location.push(await getAdressGeocode(token, allTweets._realData.includes.users[user].location).then(function (response) { return response }).catch(function (error) {return ' not found' }))
+        allUser.name.push(allTweets._realData.includes.users[user].name)
+        allUser.photo.push(allTweets._realData.includes.users[user].profile_image_url)
+        allUser.username.push(allTweets._realData.includes.users[user].username)
+    }
+    return {
+        "tweets": allTweets._realData.data,
+        "userLocation": allUser.location,
+        "photo": allUser.photo,
+        "name": allUser.name,
+        "username": allUser.username
     }
 }
 
@@ -111,18 +151,25 @@ function drawMap(response) {
                     'case',
                     ['boolean', ['feature-state', 'retweets'], false],
                     '#DEFD6D',
-                    'rgba(0,0,0,0)'
+                    'transparent'
                 ],
                 // blue color fill
-                'fill-opacity': 0.5,
-                'fill-color-transition': {
-                    'duration': 5000,
-                    'delay': 0
-                }
+                'fill-opacity': 0.5
             }
         })
 
         let allCountries = map.getSource('country')._data.features
+
+        allCountries.forEach(idCountry => {
+            map.setFeatureState(
+                { source: 'country', id: idCountry.id },
+                { retweets: false }
+            )
+            map.setFeatureState(
+                { source: 'country', id: idCountry.id },
+                { gradient: 0 }
+            )
+        })
 
         search.onclick = () => {
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
@@ -132,6 +179,10 @@ function drawMap(response) {
                 map.setFeatureState(
                     { source: 'country', id: idCountry.id },
                     { retweets: false }
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { gradient: 0 }
                 )
             })
         }
@@ -178,7 +229,6 @@ function drawMap(response) {
         })
         // add marker for tweets 
         async function addMarkersMap(user, scope) {
-            let tweetsDiv = ''
             let userData = await getUser(user)
             if (JSON.parse(userData).errors && scope === 'search') {
                 search.disabled = false
@@ -189,10 +239,7 @@ function drawMap(response) {
             }
             const allTweets = await addMarker(response, JSON.parse(userData))
 
-            if (scope === 'search') {
-                tweetsDiv = tweetsDivR[1]
-            } else if (scope === 'myTweets') {
-                tweetsDiv = tweetsDivR[0]
+            if (scope === 'myTweets') {
                 tweetDivMe.innerHTML = `
                 <img class="profileTweet" src="${allTweets.photo}"/>
                 <div>
@@ -229,7 +276,6 @@ function drawMap(response) {
                             </div>`
 
                 list_all_tweets.push(inTweet)
-                /* tweetsDiv.insertAdjacentHTML('beforeend', inTweet) */
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
                 )
@@ -247,6 +293,57 @@ function drawMap(response) {
                 div = 1
             }
             renderingTweets(list_all_tweets, currentPage, div)
+        }
+
+        async function addMarkersMapHashtag(hashtag) {
+            const allTweets = await addMarkerHashtag(response, hashtag)
+            search.disabled = false
+            if (!allTweets.tweets){
+                return tweetsDivR[1].insertAdjacentHTML('afterBegin', '<div>Hashtag non trouvé</div>')
+            }
+            for (let tweetInfo = 0; tweetInfo < allTweets.tweets.length; tweetInfo++) {
+                const popupTextId = allTweets.tweets[tweetInfo]
+                let location = {
+                    'name': 'Undefined on Ground',
+                    'geo': [-1.876659, 54.215705]
+                }
+                if (allTweets.userLocation[tweetInfo] && allTweets.userLocation[tweetInfo] !== 'not found') {
+                    location.geo = allTweets.userLocation[tweetInfo].geometry.coordinates
+                    location.name = allTweets.userLocation[tweetInfo].place_name
+                }
+                
+                if (!popupTextId) {
+                    break
+                }
+
+                let inTweet = `<div class="tweet" id="${popupTextId.id}">
+                                <img class="profileTweet" src="${allTweets.photo[tweetInfo]}"/>
+                                <div>
+                                     <div>
+                                        <div>
+                                            <p class="contentTweet nameTweet">${allTweets.name[tweetInfo]}</p>
+                                            <p class="contentTweet atTweet">@${allTweets.username[tweetInfo]}</p>
+                                        </div>
+                                        <p class="contentTweet date&Loc">${dateFormat(popupTextId.created_at)} - ${locationFormat(location.name)} </p>
+                                    </div>
+                                    <p class="contentTweet descTweet">${descFormat(popupTextId.text)}</p>
+                                </div>
+                            </div>`
+
+                list_all_tweets.push(inTweet)
+                const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+                    inTweet
+                )
+                const el = document.createElement('div')
+                el.id = popupTextId.id
+                el.classList.add('tweetsMarker')
+
+                var marker = new mapboxgl.Marker(el)
+                    .setLngLat(location.geo)
+                    .setPopup(popup)
+                    .addTo(map)
+            }
+            renderingTweets(list_all_tweets, currentPage, 1)
         }
 
         function renderingTweets(listAllTweets, pageIn, div) {
@@ -272,6 +369,10 @@ function drawMap(response) {
                         map.setFeatureState(
                             { source: 'country', id: idCountry.id },
                             { retweets: false }
+                        )
+                        map.setFeatureState(
+                            { source: 'country', id: idCountry.id },
+                            { gradient: 0 }
                         )
                     })
                     let retweet_list = await addRetweetsLine(tweetContainer.id)
@@ -307,6 +408,7 @@ function drawMap(response) {
             let locationRetweet = ''
             let geocode = []
             if (retweets.data) {
+                retweetNb = retweets.data.length
                 for (let retweet of retweets.data) {
                     let all = {}
                     if (retweet.location) {
@@ -341,16 +443,33 @@ function drawMap(response) {
         function addLines(list) {
             let idCountries = []
             let nameCountries = []
+            let list_gradient = {}
             for (let retweet of list) {
                 nameCountries.push(retweet.location)
+                if (getIdCountry([retweet.location], allCountries) in list_gradient){
+                    list_gradient[getIdCountry([retweet.location], allCountries)].gradient ++ 
+                } else {
+                    list_gradient[getIdCountry([retweet.location], allCountries)] = {gradient:1}
+                }
             }
             idCountries = getIdCountry(nameCountries, allCountries)
             idCountries.forEach(idCountry => {
                 map.setFeatureState(
                     { source: 'country', id: idCountry },
                     { retweets: true }
+                    
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry },
+                    { gradient: (list_gradient[idCountry].gradient/list.length) * 100 }
+                    
                 )
             })
+            map.setPaintProperty(
+                'retweets',
+                'fill-opacity',
+                test
+            )
         }
 
         search.addEventListener('click', (e) => {
@@ -358,12 +477,19 @@ function drawMap(response) {
             tweetsDivR[1].innerHTML = ''
             search.disabled = true
             divNum = 1
-            addMarkersMap(searchInput.value, 'search')
+
+            if ( searchInput.value.includes('#')) {
+                addMarkersMapHashtag(searchInput.value.replace('#','%23'))
+            } else {
+                addMarkersMap(searchInput.value, 'search')
+            }
+            
         })
 
         buttonMyTweets.addEventListener('click', (e) => {
             list_all_tweets = []
             divNum = 0
+            currentPage = 1
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
             })
@@ -371,6 +497,10 @@ function drawMap(response) {
                 map.setFeatureState(
                     { source: 'country', id: idCountry.id },
                     { retweets: false }
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { gradient: 0 }
                 )
             })
             tweetsDivR[0].innerHTML = ''
@@ -381,6 +511,7 @@ function drawMap(response) {
             list_all_tweets = []
             searchInput.value = ''
             tweetsDivR[1].innerHTML = ''
+            currentPage = 1
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
             })
@@ -388,6 +519,10 @@ function drawMap(response) {
                 map.setFeatureState(
                     { source: 'country', id: idCountry.id },
                     { retweets: false }
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { gradient: 0 }
                 )
             })
         })
@@ -477,6 +612,35 @@ function drawMap(response) {
             })
         })
 
+        searchInput.addEventListener('input', async e => {
+            let listItem = []
+            if (!searchInput.value.includes('#') && searchInput.value.length > 2) {
+                let autocomplete = await getAutocomplete(searchInput.value)
+                for (let user of autocomplete._realData) {
+                    listItem.push(user)
+                    listItem.sort((a, b) => (a.followers_count > b.followers_count) ? -1 : ((b.followers_count > a.followers_count) ? 1 : 0))
+                }
+            }
+            listAutocomplete.innerHTML = ''
+            let autocompleteItem = []
+            if (listItem.length > 0 ) {
+                let item = 3
+                for (let i=0; i < item; i++) {
+                    if (listItem[i]) {
+                        let name = listItem[i].name.toLowerCase()
+                        let username = listItem[i].screen_name.toLowerCase()
+                        if (name.includes(searchInput.value.toLowerCase()) || username.includes(searchInput.value.toLowerCase())) {
+                            autocompleteItem = `<option value=${listItem[i].screen_name}>${listItem[i].name}</option>`
+                            listAutocomplete.insertAdjacentHTML('beforeend', autocompleteItem)
+                        } else {
+                            item ++
+                        }
+                    }
+                    
+                }
+            }
+        })
+
         tweetsDivR[0].innerHTML = ''
         addMarkersMap(sessionStorage.usercompanyTwitter, 'myTweets')
     })
@@ -486,6 +650,31 @@ function drawMap(response) {
 /*
 Link to API (Twitter/mapbox geocode)
 */
+
+function getAutocomplete(user) {
+    return $.ajax({
+        url: `/autocompleteUser?user=${user}`,
+        type: "POST",
+        success: function (response, status, http) {
+            if (response) {
+                return response
+            }
+        }
+    })
+}
+
+function getHashtag(hashtag) {
+    return $.ajax({
+        url:`/searchHashtag?hashtag=${hashtag}`,
+        type: "POST",
+        success: function (response, status, http) {
+            if (response) {
+                return response
+            }
+        }
+    })
+}
+
 // get user 
 function getUser(user) {
     return $.ajax({
