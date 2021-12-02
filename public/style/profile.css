@@ -397,3 +397,38 @@
     height: 2vh;
     padding: 0.2vh 0;
 }
+
+/* ---------------------------------------------------------- */
+/* ---------------------------------------------------------- */
+
+#profileContent>#headerButton{
+    position:absolute;
+    right: 0;
+    top: 0;
+    height: 10vh;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding-right: 4vw;
+}
+
+#profileContent>#headerButton>#button2{
+    cursor: pointer;
+    font-weight: 700;
+    background-color: transparent;
+    border-radius: 30px;
+    padding: 10px 30px;
+    margin-left: 30px;
+    border:solid 2px var(--yellow);
+    color: var(--yellow);
+}
+
+#profileContent>#headerButton>#button1{
+    cursor: pointer;
+    font-weight: 700;
+    background-color: var(--yellow);
+    border-radius: 30px;
+    padding: 10px 20px;
+    border:solid 2px var(--yellow);
+    color: var(--bg-blue);
+}

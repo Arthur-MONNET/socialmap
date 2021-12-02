@@ -236,7 +236,7 @@ function drawMap(response) {
         async function addMarkersMap(user, scope) {
             let userData = await getUser(user)
             if (user === sessionStorage.usercompanyTwitter && scope==='myTweets') {
-                profilename.innerHTML = JSON.parse(userData).data.name
+                profilename.innerHTML = sessionStorage.userfirstname + '&nbsp;&nbsp;&nbsp;' + sessionStorage.userlastname
                 profileimage.src = JSON.parse(userData).data.profile_image_url
             }
             if (JSON.parse(userData).errors && scope === 'search') {
@@ -389,6 +389,7 @@ function drawMap(response) {
                     let retweet_list = await addRetweetsLine(tweetContainer.id)
                     removeOtherTweets(tweetContainer.id)
                     tweetContainer.style.borderColor = 'var(--blue)'
+                    tweetContainer.style.background = 'rgb(255, 255, 255, 1)';
                     for (let i = 0; i < arrayTweetsDiv.length; i++) {
                         if (arrayTweetsDiv[i].id !== tweetContainer.id) {
                             arrayTweetsDiv[i].style = 'border-color:transparent'
@@ -419,7 +420,7 @@ function drawMap(response) {
             let locationRetweet = ''
             let geocode = []
             if (retweets.data) {
-                retweetNb = retweets.data.length
+                let retweetNb = retweets.data.length
                 for (let retweet of retweets.data) {
                     let all = {}
                     if (retweet.location) {
@@ -464,15 +465,21 @@ function drawMap(response) {
                 }
             }
             idCountries = getIdCountry(nameCountries, allCountries)
+            let arrayRetweet =[]
+            idCountries.forEach(idCountry => {
+                arrayRetweet.push((list_gradient[idCountry].gradient/list.length) * 100)
+            })
+            let maxRetweet = Math.max(...arrayRetweet)
             idCountries.forEach(idCountry => {
                 map.setFeatureState(
                     { source: 'country', id: idCountry },
                     { retweets: true }
                     
                 )
+                console.log(((list_gradient[idCountry].gradient/list.length) * 100)/maxRetweet*80+20)
                 map.setFeatureState(
                     { source: 'country', id: idCountry },
-                    { gradient: (list_gradient[idCountry].gradient/list.length) * 100 }
+                    { gradient: (((list_gradient[idCountry].gradient/list.length) * 100)/maxRetweet*80+20) -10 }
                     
                 )
             })

@@ -16,23 +16,23 @@ function randomChar() {
 let fs1 = `<div>
 <div>
     <p>Nom</p>
-    <input type='text' name="lastname" class="lastname" placeholder="Nom" required/>
+    <input type='text' name="lastname" class="lastname" placeholder="Nom" value="Feutry" required/>
 </div>
 <div>
     <p>Prénom</p>
-    <input type='text' name="firstname" class="firstname" placeholder="Prénom" required />
+    <input type='text' name="firstname" class="firstname" placeholder="Prénom" value="Chloé" required />
 </div>
 </div>
 <p>Poste occupé</p>
-<input type='text' name="post" class="post" placeholder="Poste occupé" required />`
+<input type='text' name="post" class="post" placeholder="Poste occupé" value="Community Manager" required />`
 
 let fs2 = `<p>E-mail</p>
-<input type='email' name="email" class="email" placeholder="E-mail" required />
+<input type='email' name="email" class="email" placeholder="E-mail" value="chloe.feutry11@gmail.com" required />
 <p>Mot de passe</p>
 <input type='password' name="pwd" class="pwd" placeholder="Mot de passe" required/>`
 
 let fs3 = `<div id="fs3">
-<input type="radio" name="fs3" style="display: none;" class="check" id="solo" value="solo" checked>
+<input type="radio" name="fs3" style="display: none;" class="check" id="solo" value="solo">
 <label for="solo">
     <div>
         <img src="../asset/img/solo_icon.svg" />
@@ -61,7 +61,7 @@ let fs3 = `<div id="fs3">
 </div>`
 
 let fs4 = `<p>Nom de mon espace d’équipe</p>
-<input type='text' name="teamName" class="teamName" placeholder="Nom" required />
+<input type='text' name="teamName" class="teamName" placeholder="Nom" value="Team Managment" required />
 <p>E-Mail de mes coéquipiers</p>
 <div class="gradientTop"></div>
 <div class="teamMails">
@@ -79,21 +79,21 @@ fill="none" xmlns="http://www.w3.org/2000/svg">
 let fs5 = `<div>
 <div>
     <p>Nom de l’entreprise</p>
-    <input type='text' name="company" class="company" placeholder="Entreprise" required />
+    <input type='text' name="company" class="company" placeholder="Entreprise" value="Netflix" required />
 </div>
 <div>
     <p>Twitter de l’entreprise</p>
-    <input type='text' name="companyTwitter" class="companyTwitter" placeholder="@Entreprise" required />
+    <input type='text' name="companyTwitter" class="companyTwitter" placeholder="@Entreprise" value="Netflix" required />
 </div>
 </div>
 <div>
 <div>
     <p>Secteur d’activité</p>
-    <input type='text' name="activity" class="activity" placeholder="Activité" required />
+    <input type='text' name="activity" class="activity" placeholder="Activité" value="industries créatives" required />
 </div>
 <div>
     <p>Localisation du siege sociale</p>
-    <input type='text' name="location" class="location" placeholder="Localisation" required /
+    <input type='text' name="location" class="location" placeholder="Localisation" value="California" required /
      
 </div>
 </div>`
@@ -224,7 +224,7 @@ form.addEventListener('click', e => {
     }
     if (e.target.classList.contains("addMail") || e.target.parentElement.classList.contains("addMail") || e.target.parentElement.parentElement.classList.contains("addMail")) {
         let newNode = document.createElement("input")
-        newNode.type = 'email', newNode.classList.add('teamMail'), newNode.placeholder = 'E-mail', newNode.setAttribute("required", "")
+        newNode.type = 'email', newNode.classList.add('teamMail'), newNode.placeholder = 'E-mail'
         form.querySelector('.teamMail:nth-last-child(2)').insertAdjacentElement('afterend', newNode)
         form.querySelector('.teamMail:nth-last-child(2)').focus()
         form.querySelector('.teamMails').scrollTop = form.querySelector('.teamMails').scrollHeight;
