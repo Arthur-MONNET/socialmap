@@ -493,6 +493,7 @@ body{
 }
 
 .iconUnderPage{
+    cursor: pointer;
     height: 3.5vh;
     width: 3.5vh;
     margin-left: 1vw;
