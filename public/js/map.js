@@ -741,6 +741,7 @@ function drawMap(response) {
         }
 
         buttonSuivis.addEventListener('click', e => {
+            suiviInput.value = ''
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
             })

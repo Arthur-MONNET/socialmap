@@ -17,6 +17,6 @@
     "express": "^4.17.1",
     "heroku": "^7.59.2",
     "mysql": "^2.18.1",
-    "twitter-api-v2": "^1.6.5"
+    "twitter-api-v2": "^1.7.0"
   }
 }
