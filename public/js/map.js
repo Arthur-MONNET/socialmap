@@ -380,7 +380,7 @@ function drawMap(response) {
                     return
                 }
             }
-            map.flyTo({center: lastLocation, zoom: 2})
+            map.flyTo({center: [lastLocation[0]-10,lastLocation[1]-20], zoom: 2})
             addClickTweets()
         }
 
@@ -389,7 +389,7 @@ function drawMap(response) {
             const arrayTweetsDiv = Array.prototype.slice.call(tweetsInsered)
             arrayTweetsDiv.forEach(tweetContainer => {
                 tweetContainer.addEventListener('click', async () => {
-                    map.flyTo({center: allLocation[tweetContainer.id], zoom: 2})
+                    map.flyTo({center: [allLocation[tweetContainer.id][0]-10,allLocation[tweetContainer.id][1]-20], zoom: 2})
                     allCountries.forEach(idCountry => {
                         map.setFeatureState(
                             { source: 'country', id: idCountry.id },

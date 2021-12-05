@@ -1,3 +1,9 @@
+
+/*----------------------------------------------------------------------------------------*/
+/*------------------------------    GENERAL     ------------------------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+
 #mapContent{
     display: flex;
     flex-direction: row;
@@ -39,8 +45,17 @@ body{
     justify-content:space-between;
 }
 
-/*----------------------------------------------------------------------------------------*/
+@media (min-width: 1830px) {
+    .nameTweet,.contentTweet,.textPoint{
+        font-size: calc(0.70px * 18.30);
+    }
+    .tweets>.numPage>button,#buttonsPage>div>p,#followPage .addFollowWrapper>div>p{
+        font-size: calc(0.90px * 18.30);
+    }
+}
 
+/*----------------------------------------------------------------------------------------*/
+/*-------------------------- BUTTON SECTIONS PANNEAU -------------------------------------*/
 /*----------------------------------------------------------------------------------------*/
 
 #buttonsPageWrapper{
@@ -80,7 +95,7 @@ body{
 }
 
 /*----------------------------------------------------------------------------------------*/
-
+/*-------------------------     GENERAL PANNEAU      -------------------------------------*/
 /*----------------------------------------------------------------------------------------*/
 
 #scrollWrapper{
@@ -112,6 +127,76 @@ body{
     flex-direction: column;
     position: absolute;
 }
+
+/*-------------------------- GENERAL TWEET -------------------------------------*/
+
+.tweets{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: 3vh;
+}
+.tweets>.content{
+    width :100%;
+}
+.tweets>.numPage{
+    height :3vh;
+    display: flex;
+    flex-direction: row;
+}
+.tweets>.numPage>button{
+    background: none;
+    opacity: 0.3;
+    border: none;
+    width: 0.90vw;
+    font-weight: 600;
+    font-size: 0.90vw;
+    font-family: 'Lato', sans-serif;
+}
+.tweets>.numPage>button:hover{
+    opacity: 0.8;
+}
+.tweets>.numPage>.select{
+    opacity: 0.8;
+}
+
+.tweets>.numPage>.pageLeft,.tweets>.numPage>.pageRight{
+    width: 1.20vw;
+    opacity: 1;
+}
+.tweet{
+    border: 2px solid transparent;
+    cursor: pointer;
+    width: calc(100% - 3vh);
+    height: 6vh;
+    max-height: 55px;
+    background-color: rgb(255, 255, 255, 0.7);
+    border-radius: 10px;
+    padding: 1vh 1.5vh;
+    margin-bottom: 1vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: flex-start;
+}
+.tweet>div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+}
+.tweet>div>div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
 .profileTweet{
     margin-right: 0.8vh;
     width: 5vh;
@@ -132,14 +217,8 @@ body{
 .atTweet{
     margin-top: -5px;
 }
-@media (min-width: 1830px) {
-    .nameTweet,.contentTweet,.textPoint{
-        font-size: calc(0.70px * 18.30);
-    }
-    .tweets>.numPage>button,#buttonsPage>div>p,#followPage .addFollowWrapper>div>p{
-        font-size: calc(0.90px * 18.30);
-    }
-}
+
+/*-------------------------- GENERAL TIMELINE ----------------------------------*/
 
 .timeLineWrapper{
     width: 100%;
@@ -203,80 +282,35 @@ body{
     font-size: 0.90vw;
 }
 
-.tweets{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding-top: 3vh;
-}
-.tweets>#content{
-    height :100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-}
-.tweets>.numPage{
-    height :3vh;
+/*-------------------------- GENERAL UNDER BUTTON ----------------------------------*/
+
+#buttonsUnderPage{
+    width: calc(100% - 3vw);
+    height: 10vh;
+    padding: 0 1.5vw;
     display: flex;
     flex-direction: row;
-}
-.tweets>.numPage>button{
-    background: none;
-    opacity: 0.3;
-    border: none;
-    width: 0.90vw;
-    font-weight: 600;
-    font-size: 0.90vw;
-    font-family: 'Lato', sans-serif;
-}
-.tweets>.numPage>button:hover{
-    opacity: 0.8;
-}
-.tweets>.numPage>.select{
-    opacity: 0.8;
+    justify-content: flex-end;
+    align-items: center;
 }
 
-.tweets>.numPage>.pageLeft,.tweets>.numPage>.pageRight{
-    width: 1.20vw;
-    opacity: 1;
-}
-
-.tweet{
-    border: 2px solid transparent;
-    cursor: pointer;
-    width: calc(100% - 3vh);
-    height: 6vh;
-    max-height: 55px;
-    background-color: rgb(255, 255, 255, 0.7);
+.iconUnderPage{
+    cursor: pointer ;
+    height: 3.5vh;
+    width: 3.5vh;
+    margin-left: 1vw;
     border-radius: 10px;
-    padding: 1vh 1.5vh;
-    margin-bottom: 1vh;
     display: flex;
-    flex-direction: row;
-    justify-content: stretch;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--yellow);
 }
-.tweet>div{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: stretch;
-}
-.tweet>div>div{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-}
+
 /*----------------------------------------------------------------------------------------*/
+/*-------------------------     SPECIFIC PANNEAU     -------------------------------------*/
+/*----------------------------------------------------------------------------------------*/
+
+/*---------------------------    MY TWEETS PAGE     --------------------------------------*/
 
 #myTweetsPage{
     left: calc(25% / 6);
@@ -294,7 +328,7 @@ body{
     height :52vh;
 }
 
-/*----------------------------------------------------------------------------------------*/
+/*----------------------------    SEARCH PAGE     ----------------------------------------*/
 
 #searchPage .tweets{
     height :47vh;
@@ -385,7 +419,7 @@ body{
     color: transparent;
 }
 
-/*----------------------------------------------------------------------------------------*/
+/*---------------------------    FOLLOWS PAGE     --------------------------------------*/
 
 #followPage{
     left: calc(425% / 6);
@@ -479,31 +513,8 @@ body{
 }
 
 /*----------------------------------------------------------------------------------------*/
-
+/*-------------------------     OTHER ELEMENTS       -------------------------------------*/
 /*----------------------------------------------------------------------------------------*/
-
-#buttonsUnderPage{
-    width: calc(100% - 3vw);
-    height: 10vh;
-    padding: 0 1.5vw;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.iconUnderPage{
-    cursor: pointer;
-    height: 3.5vh;
-    width: 3.5vh;
-    margin-left: 1vw;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--yellow);
-}
-
 
 .tweetsMarker {
     background-color: rgba(70, 89, 255, 0.2);
@@ -512,10 +523,6 @@ body{
     height: 4vh;
     border-radius: 50%;
     cursor: pointer;
-}
-
-.content{
-    width: 100%;
 }
 
 /*----------------------------------------------------------------------------------------*/
