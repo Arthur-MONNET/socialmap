@@ -4,7 +4,7 @@ SocialMap est un projet crée avec l'API Twitter.
 
 Il a pour objectif la visualisation des tweets et de leur retweets sur une carte. 
 
-![Carte](public\asset\img\img2_hom2.png)
+![Carte](https://github.com/Arthur-MONNET/socialmap/blob/main/public/asset/img/img2_hom2.png?raw=true)
 
 ## Prérequis
 
