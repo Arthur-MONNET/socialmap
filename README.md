@@ -2,7 +2,7 @@
 
 SocialMap est un projet crée avec l'API Twitter.
 
-Il a pour objectif la visualisation des tweets et de leur retweets sur une carte. 
+Il a pour objectif la visualisation des tweets et de leur retweets sur une carte dans le cadre d'une campagne ou d'une veille concurencielle
 
 ![Carte](https://github.com/Arthur-MONNET/socialmap/blob/main/public/asset/img/img2_hom2.png?raw=true)
 
@@ -21,7 +21,7 @@ Le projet utilise également Mapbox pour l'affichage et les fonctionnalité de l
 
 Apres avoir clonné ce repository, il suffit de faire:
 ```
-npm instal
+npm install
 ```
 Puis de créer un fichier .env avec un 'MAP_TOKEN' qui correspond a votre token mapbox et un 'BEARER_TOKEN' qui corresond avec votre Bearer token de votre app Twitter
 
@@ -34,6 +34,15 @@ Pour lancer le coté client, il suffit de mettre cette url dans votre navigateur
 ```
 localhost:3001
 ```
+
+## Flux de donnée et architecture du site
+
+Les données sont recolté de l'API Twitter puis mise en forme par le code pour être afficher sur le site
+
+Le site à un serveur pour la recolte de données à partir de twitter et un coté client qui affiche ces données une fois formatées
+
+Schemas sur [ce lien](https://docs.google.com/document/d/18rZ9HmRcqnnSFz9ONpNfxxLU8Qc-KgeC9FKbzI1sRBk/edit?usp=sharing)
+
 
 ## Demo 
 
