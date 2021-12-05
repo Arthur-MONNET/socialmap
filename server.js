@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
 
 
 // API Twitter request
+// recherche des tweets possedant un hastag specific
 app.post('/searchHashtag', (req, res) => {
     client.v2.search(req.query['hashtag'], {"max_results": 40, "expansions": ['geo.place_id', 'author_id'], "tweet.fields": ['public_metrics', 'created_at', 'text'],"user.fields": ['name', 'username', 'location','profile_image_url']})
     .then(response => 
@@ -36,6 +37,7 @@ app.post('/searchHashtag', (req, res) => {
     .catch(error => console.error(error))
 })
 
+// recherche du profil demandé
 app.post('/searchUserName', (req, res) =>{
     client.v2.userByUsername(req.query['username'], {"user.fields": ['location', 'public_metrics', 'profile_image_url']})
     .then(response => 
@@ -44,6 +46,7 @@ app.post('/searchUserName', (req, res) =>{
     .catch(error => console.error(error))
 })
 
+// recherche des tweets lié a l'utilisateur
 app.post('/userTweets', (req, res) => {
     client.v2.userTimeline(req.query['id'], {"expansions": 'geo.place_id',"tweet.fields": ['geo', 'public_metrics', 'created_at'],'place.fields': ['contained_within', 'country', 'geo'], "exclude": ['replies', 'retweets'], "max_results": 40})
     .then(response =>
@@ -51,6 +54,7 @@ app.post('/userTweets', (req, res) => {
     .catch(error => console.error(error))
 })
 
+// recuperation des retweets d'untweet en particulier
 app.post('/quotedOf', (req, res) => {
     client.v2.tweetRetweetedBy(req.query['id'], {"user.fields": ['location', 'public_metrics']})
     .then(response =>
@@ -59,6 +63,7 @@ app.post('/quotedOf', (req, res) => {
     .catch(error => console.error(error))
 })
 
+// previsualisation des nom des user
 app.post('/autocompleteUser', (req, res) => {
     client.v1.searchUsers(req.query['user'], {"count": 20})
     .then(response => 
