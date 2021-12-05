@@ -30,7 +30,7 @@ Le serveur se lance ensuite avec :
 nmp start
 ```
 
-Pour lancer le coté client, il suffit de mettre cette url dans ovotr navigateur:
+Pour lancer le coté client, il suffit de mettre cette url dans votre navigateur:
 ```
 localhost:3001
 ```
