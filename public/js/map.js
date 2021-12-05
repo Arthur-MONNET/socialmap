@@ -41,12 +41,14 @@ let nbTweetsIn = 5
 let lastLocation = [-1.876659, 54.215705]
 let allLocation = {}
 
+// gradient des retweets
 let test =  [
     'step',
     ['feature-state', 'gradient'],
     0
 ]
 
+// intialisation du gradient
 for (let i = 0; i<91; i++) {
     test.push(i)
     test.push((i+10)/100)
@@ -55,6 +57,8 @@ for (let i = 0; i<91; i++) {
 let openSearchFollow = false
 let allZoom = [1, 2, 3.5, 4.5, 6, 7, 9]
 let timeLineText = ['1 ans', '9 mois', '6 mois', '4 mois', '3 mois', '2 mois', '1 mois', '3 semaines', '2 semaines', '1 semaine', '1 jour']
+
+// recuperation du token de mapbox
 $.ajax({
     url: "/mapToken",
     type: "POST",
@@ -66,6 +70,7 @@ $.ajax({
     }
 })
 
+// recherche et mise en forme des tweets d'un user
 async function addMarker(token, user) {
     const geocodeUser = await getAdressGeocode(token, user.data.location)
     const temp2 = await getTweetsUser(user.data.id)
@@ -78,6 +83,7 @@ async function addMarker(token, user) {
     }
 }
 
+// recherche et mise en forme des tweets avec hashtag
 async function addMarkerHashtag(token, hashtag) {
     const allTweets = await getHashtag(hashtag)
     let allUser = {
@@ -104,6 +110,7 @@ async function addMarkerHashtag(token, hashtag) {
     }
 }
 
+// formatage de donné
 function dateFormat(date) {
     let year = date.substring(2, 4)
     let month = date.substring(5, 7)
@@ -115,11 +122,13 @@ function locationFormat(loc) {
     if (loc.indexOf(',') !== -1) return loc.substring(0, loc.indexOf(','))
     else return loc
 }
+
 function descFormat(desc) {
     if (desc.length > 30) return desc.substring(0, (desc.indexOf(' ') > 0) ? desc.substring(0, 30).lastIndexOf(' ') : 30) + "..."
     else return desc
 }
 
+// recherche de l'id d'un pays
 function getIdCountry(listCountries, allCountries) {
     let countries = allCountries.filter(country => listCountries.includes(country.properties.ISO_A2))
     let idCountries = []
@@ -127,6 +136,7 @@ function getIdCountry(listCountries, allCountries) {
     return idCountries
 }
 
+// recherche du geocode d'une adresse
 async function getAdressGeocode(token, adress) {
     const geocode = await getGeocode(token, adress)
     if (geocode) {
@@ -134,6 +144,7 @@ async function getAdressGeocode(token, adress) {
     }
 }
 
+// affichage et fontion de la map
 function drawMap(response) {
     mapboxgl.accessToken = response
     const map = new mapboxgl.Map({
@@ -174,6 +185,8 @@ function drawMap(response) {
             }
         })
 
+        // initalisation de la map
+
         let allCountries = map.getSource('country')._data.features
 
         allCountries.forEach(idCountry => {
@@ -187,6 +200,7 @@ function drawMap(response) {
             )
         })
 
+        // remise à zero de la map a la recherche de nouveau tweets
         search.onclick = () => {
             document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
                 tweetMarker.remove()
@@ -232,6 +246,7 @@ function drawMap(response) {
         zoomAll.onclick = () => {
             map.zoomTo(1, { duration: 500 })
         }
+        // surbrillance des pays retwittés
         map.addLayer({
             'id': 'outline',
             'type': 'line',
@@ -242,7 +257,8 @@ function drawMap(response) {
                 'line-width': 0.25
             }
         })
-        // add marker for tweets 
+
+        // recherche et formatage des tweets avec un user
         async function addMarkersMap(user, scope) {
             let userData = await getUser(user)
             if (user === sessionStorage.usercompanyTwitter && scope==='myTweets') {
@@ -295,8 +311,8 @@ function drawMap(response) {
                             </div>`
 
                 list_all_tweets.push(inTweet)
-                lastLocation = location.geo
-                allLocation[popupTextId.id] = location.geo
+                lastLocation = [location.geo[0], location.geo[1]-20]
+                allLocation[popupTextId.id] = [location.geo[0], location.geo[1]-20]
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
                 )
@@ -318,6 +334,7 @@ function drawMap(response) {
             renderingTweets(list_all_tweets, currentPage, div, nbTweets)
         }
 
+        // recherche et formatage des tweets avec un hashtag
         async function addMarkersMapHashtag(hashtag) {
             const allTweets = await addMarkerHashtag(response, hashtag)
             search.disabled = false
@@ -357,7 +374,8 @@ function drawMap(response) {
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
                     inTweet
                 )
-                lastLocation = location.geo
+                lastLocation = [location.geo[0], location.geo[1]-20]
+                allLocation[popupTextId.id] = [location.geo[0], location.geo[1]-20]
                 const el = document.createElement('div')
                 el.id = popupTextId.id
                 el.classList.add('tweetsMarker')
@@ -370,6 +388,7 @@ function drawMap(response) {
             renderingTweets(list_all_tweets, currentPage, 1, 4)
         }
 
+        // affichage des tweets
         function renderingTweets(listAllTweets, pageIn, div, nbTweet) {
             tweetsDivR[div].innerHTML = ''
             for (let i = (pageIn - 1) * nbTweet; i < ((pageIn - 1) * nbTweet) + nbTweet; i++) {
@@ -384,6 +403,7 @@ function drawMap(response) {
             addClickTweets()
         }
 
+        // initalization des clicks sur les tweets
         function addClickTweets() {
             tweetsInsered = document.getElementsByClassName('tweet')
             const arrayTweetsDiv = Array.prototype.slice.call(tweetsInsered)
@@ -415,6 +435,7 @@ function drawMap(response) {
             search.disabled = false
         }
 
+        // disparition des autre markers que celui du tweets selectionné
         function removeOtherTweets(tweetId) {
             let allTweetsMarker = document.getElementsByClassName('tweetsMarker')
             let arrayTweetsMarker = Array.prototype.slice.call(allTweetsMarker)
@@ -428,6 +449,7 @@ function drawMap(response) {
 
         }
 
+        // recuperation des retweets
         async function addRetweetsLine(id) {
             let list_retweets = []
             const retweets = await quotedOf(id)
@@ -465,6 +487,8 @@ function drawMap(response) {
             return list_retweets
 
         }
+
+        // ajout de la surbuillance et du gradient sur les pays retwettés
         function addLines(list) {
             let idCountries = []
             let nameCountries = []
@@ -503,7 +527,8 @@ function drawMap(response) {
             )
         }
 
-        search.addEventListener('click', (e) => {
+        // fonction de recherche d'un user ou d'un hashtag
+        search.addEventListener('click', async (e) => {
             list_all_tweets = []
             tweetsDivR[1].innerHTML = ''
             search.disabled = true
@@ -511,13 +536,14 @@ function drawMap(response) {
             nbTweetsIn = 4
 
             if ( searchInput.value.includes('#')) {
-                addMarkersMapHashtag(searchInput.value.replace('#','%23'))
+                await addMarkersMapHashtag(searchInput.value.replace('#','%23'))
             } else {
-                addMarkersMap(searchInput.value, 'search')
+                await addMarkersMap(searchInput.value, 'search')
             }
-            
+            map.flyTo({center: lastLocation, zoom: 2})
         })
 
+        // remise à zero de la carte et initalisation de la dashbord de click sur 'mes tweets'
         buttonMyTweets.addEventListener('click', (e) => {
             map.flyTo({center: [0, 0], zoom: 1})
             list_all_tweets = []
@@ -541,6 +567,7 @@ function drawMap(response) {
             addMarkersMap(sessionStorage.usercompanyTwitter, 'myTweets')
         })
 
+        // remise à zero de la carte et initalisation de la dashbord de click sur la recherche
         buttonSearch.addEventListener('click', (e) => {
             map.flyTo({center: [0, 0], zoom: 1})
             list_all_tweets = []
@@ -561,6 +588,8 @@ function drawMap(response) {
                 )
             })
         })
+
+        // fontion de changement de page
         function changePage(e, move, numPage, numberPage) {
             numPage.querySelector('.select').classList.remove('select')
             let num1 = parseInt(numPage.querySelector('.page1').innerHTML)
@@ -576,6 +605,8 @@ function drawMap(response) {
             }
             renderingTweets(list_all_tweets, currentPage, divNum, nbTweetsIn)
         }
+
+        // systeme de page sur les page de tweets (recherche, mes tweets)
         document.querySelectorAll(".numPage").forEach(numPage => {
             numPage.addEventListener('click', e => {
                 if (e.target.classList.contains('pageLeft')) {
@@ -647,6 +678,7 @@ function drawMap(response) {
             })
         })
 
+        // autocomplete des recherches
         searchInput.addEventListener('input', async e => {
             let listItem = []
             if (!searchInput.value.includes('#') && searchInput.value.length > 2) {
@@ -676,6 +708,7 @@ function drawMap(response) {
             }
         })
 
+        // autocomplete de l'ajout des suivis
         suiviInput.addEventListener('input', async e => {
             let listItem = []
             if (!suiviInput.value.includes('#') && suiviInput.value.length > 2) {
@@ -705,6 +738,7 @@ function drawMap(response) {
             }
         })
 
+        // ajout d'un suivi
         followAddButton.addEventListener('click', async e => {
             let newFollow = await getUser(suiviInput.value)
             let newFollowDiv = 
@@ -727,6 +761,7 @@ function drawMap(response) {
             followdivNewClick()
         })
 
+        // definition des click sur les suivis
         function followdivNewClick() {
             let followDivs = document.getElementsByClassName('followWrapper')
             let arrayfollowDivs = Array.prototype.slice.call(followDivs)
@@ -739,11 +774,27 @@ function drawMap(response) {
             }
         }
 
+        // remise a zero de la map et initialisation des fontions sur le click du boutton suivis
         buttonSuivis.addEventListener('click', e => {
+            suiviInput.value = ''
+            document.querySelectorAll('.tweetsMarker').forEach(function (tweetMarker) {
+                tweetMarker.remove()
+            })
+            allCountries.forEach(idCountry => {
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { retweets: false }
+                )
+                map.setFeatureState(
+                    { source: 'country', id: idCountry.id },
+                    { gradient: 0 }
+                )
+            })
             map.flyTo({center: [0, 0], zoom: 1})
             followdivNewClick()
         })
 
+        // initalisation de la dashbord et de la carte sur 'mes tweets'
         tweetsDivR[0].innerHTML = ''
         addMarkersMap(sessionStorage.usercompanyTwitter, 'myTweets')
     })
